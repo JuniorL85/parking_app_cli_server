@@ -14,13 +14,13 @@ const _jsonHeaders = {
 final personRepo = PersonRepository.instance;
 // Configure routes.
 final _router = Router()
-  ..get('/persons', _getAllPersonsHandler)
+  ..get('/persons', _getAllPersons)
   ..get('/persons/<id>', _getPersonById)
   ..post('/persons', _createPerson)
   ..put('/persons/<id>', _updatePerson)
   ..delete('/persons/<id>', _deletePerson);
 
-Future<Response> _getAllPersonsHandler(Request req) async {
+Future<Response> _getAllPersons(Request req) async {
   final persons = personRepo.getAllPersons().map((p) => p.toJson()).toList();
   return Response.ok(
     jsonEncode(persons),

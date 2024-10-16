@@ -8,7 +8,7 @@ import 'set_main.dart';
 
 class VehicleLogic extends SetMain {
   final VehicleRepository vehicleRepository = VehicleRepository.instance;
-  final PersonRepository personRepository = PersonRepository.instance;
+  final PersonRepository personRepository = PersonRepository();
 
   List<String> texts = [
     'Du har valt att hantera Fordon. Vad vill du göra?\n',

@@ -5,7 +5,7 @@ import '../repositories/person_repo.dart';
 import 'set_main.dart';
 
 class PersonLogic extends SetMain {
-  final PersonRepository personRepository = PersonRepository.instance;
+  final PersonRepository personRepository = PersonRepository();
 
   List<String> texts = [
     'Du har valt att hantera Personer. Vad vill du göra?\n',

@@ -1,13 +1,21 @@
+import 'dart:convert';
+
 import 'package:collection/src/iterable_extensions.dart';
 
 import '../logic/set_main.dart';
 import '../models/person.dart';
 import 'vehicle_repo.dart';
+import 'package:http/http.dart' as http;
 
 class PersonRepository extends SetMain {
-  PersonRepository._privateConstructor();
+  String host;
+  String port;
+  String resource;
 
-  static final instance = PersonRepository._privateConstructor();
+  PersonRepository(
+      {this.resource = 'persons',
+      this.host = 'http://localhost',
+      this.port = '8080'});
 
   final VehicleRepository vehicleRepository = VehicleRepository.instance;
 
@@ -19,18 +27,33 @@ class PersonRepository extends SetMain {
   ];
 
   Future<dynamic> addPerson(Person person) async {
-    return personList.add(person);
+    final uri = Uri.parse('$host:$port/$resource');
+
+    await http.post(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(person.serialize(person)));
+    // return personList.add(person);
   }
 
   Future<dynamic> getAllPersons() async {
-    if (personList.isNotEmpty) {
-      for (var (index, person) in personList.indexed) {
-        print(
-            '${index + 1}. Id: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}\n');
-      }
-    } else {
-      print('Inga personer att visa i nuläget. Testa att lägga till personer.');
-    }
+    final uri = Uri.parse('$host:$port/$resource');
+
+    final response =
+        await http.get(uri, headers: {'Content-Type': 'application/json'});
+
+    final json = jsonDecode(response.body);
+
+    print(json);
+
+    return (json as List).map((person) => Person.fromJson(person)).toList();
+    // if (personList.isNotEmpty) {
+    //   for (var (index, person) in personList.indexed) {
+    //     print(
+    //         '${index + 1}. Id: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}\n');
+    //   }
+    // } else {
+    //   print('Inga personer att visa i nuläget. Testa att lägga till personer.');
+    // }
   }
 
   Future<dynamic> updatePersons(Person person) async {

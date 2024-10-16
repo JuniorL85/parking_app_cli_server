@@ -1,18 +1,27 @@
+import 'package:parking_app_cli/models/networked.dart';
+
 String idGenerator() {
   final now = DateTime.now();
   return now.microsecondsSinceEpoch.toString();
 }
 
-class Person {
+class Person extends Networked {
   Person({
     required this.name,
     required this.socialSecurityNumber,
     String? id,
-  }) : id = id ?? idGenerator();
+  })  : id = id ?? idGenerator(),
+        super(resource: 'persons');
 
   final String id;
   String name;
   String socialSecurityNumber;
+
+  @override
+  Person deserialize(Map<String, dynamic> json) => Person.fromJson(json);
+
+  @override
+  Map<String, dynamic> serialize(item) => toJson();
 
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
