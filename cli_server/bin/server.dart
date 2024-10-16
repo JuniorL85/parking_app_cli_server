@@ -28,9 +28,20 @@ Future<Response> _getAllPersonsHandler(Request req) async {
   );
 }
 
-Response _getPersonById(Request req) {
-  final id = req.params['id'];
-  return Response.ok('$id\n');
+Future<Response> _getPersonById(Request req) async {
+  final data = await req.readAsString();
+  final json = jsonDecode(data);
+  final person = Person.fromJson(json);
+
+  final persons = personRepo
+      .getAllPersons()
+      .where((p) => p.id == person.id)
+      .map((p) => p.toJson())
+      .toList();
+  return Response.ok(
+    jsonEncode(persons),
+    headers: _jsonHeaders,
+  );
 }
 
 Future<Response> _createPerson(Request req) async {
