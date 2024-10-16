@@ -1,21 +1,66 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:cli_server/models/person.dart';
+import 'package:cli_server/repositories/person_repo.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+const _jsonHeaders = {
+  'Content-Type': 'application/json',
+};
+
+final personRepo = PersonRepository.instance;
 // Configure routes.
 final _router = Router()
-  ..get('/', _rootHandler)
-  ..get('/echo/<message>', _echoHandler);
+  ..get('/persons', _getAllPersonsHandler)
+  ..get('/persons/<id>', _getPersonById)
+  ..post('/persons', _createPerson)
+  ..put('/persons/<id>', _updatePerson)
+  ..delete('/persons/<id>', _deletePerson);
 
-Response _rootHandler(Request req) {
-  return Response.ok('Hello, World!\n');
+Future<Response> _getAllPersonsHandler(Request req) async {
+  final persons = personRepo.getAllPersons().map((p) => p.toJson()).toList();
+  return Response.ok(
+    jsonEncode(persons),
+    headers: _jsonHeaders,
+  );
 }
 
-Response _echoHandler(Request request) {
-  final message = request.params['message'];
-  return Response.ok('$message\n');
+Response _getPersonById(Request req) {
+  final id = req.params['id'];
+  return Response.ok('$id\n');
+}
+
+Future<Response> _createPerson(Request req) async {
+  final data = await req.readAsString();
+  final json = jsonDecode(data);
+  final person = Person.fromJson(json);
+
+  personRepo.addPerson(person);
+
+  return Response.ok('Person added!');
+}
+
+Future<Response> _updatePerson(Request req) async {
+  final data = await req.readAsString();
+  final json = jsonDecode(data);
+  final person = Person.fromJson(json);
+
+  personRepo.updatePersons(person);
+
+  return Response.ok('Person with id: ${person.id} updated!');
+}
+
+Future<Response> _deletePerson(Request req) async {
+  final data = await req.readAsString();
+  final json = jsonDecode(data);
+  final person = Person.fromJson(json);
+
+  personRepo.deletePerson(person.id);
+
+  return Response.ok('Person with id: ${person.id} deleted!');
 }
 
 void main(List<String> args) async {
