@@ -74,16 +74,20 @@ class PersonLogic extends SetMain {
 
     await personRepository.addPerson(
         Person(name: nameInput, socialSecurityNumber: socialSecurityNrInput));
-    await personRepository.getAllPersons();
-
-    stdout.write('Tryck på något för att komma till huvudmenyn');
-    stdin.readLineSync();
     setMainPage();
   }
 
-  void _showAllPersonsLogic() async {
-    print('\nDu har valt att se alla personer:\n');
-    await personRepository.getAllPersons();
+  _showAllPersonsLogic() async {
+    // print('\nDu har valt att se alla personer:\n');
+    final personList = await personRepository.getAllPersons();
+    if (personList.isNotEmpty) {
+      for (var person in personList) {
+        print(
+            'Id: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}\n');
+      }
+    } else {
+      print('Inga personer att visa i nuläget. Testa att lägga till personer.');
+    }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
     setMainPage();
@@ -111,7 +115,8 @@ class PersonLogic extends SetMain {
       return;
     }
 
-    final foundPersonIndex = personRepository.personList
+    final personList = await personRepository.getAllPersons();
+    final foundPersonIndex = personList
         .indexWhere((i) => i.socialSecurityNumber == socialSecurityNrInput);
 
     if (foundPersonIndex != -1) {
@@ -126,12 +131,6 @@ class PersonLogic extends SetMain {
         await personRepository.updatePersons(Person(
             name: updatedName, socialSecurityNumber: socialSecurityNrInput));
       }
-
-      print('\nFöljande personer är kvar i listan\n');
-      await personRepository.getAllPersons();
-
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
       setMainPage();
     } else {
       getBackToMainPage('Finns ingen person med det angivna personnumret');
@@ -159,16 +158,12 @@ class PersonLogic extends SetMain {
       return;
     }
 
-    final foundPersonIndex = personRepository.personList
+    final personList = await personRepository.getAllPersons();
+    final foundPersonIndex = personList
         .indexWhere((i) => i.socialSecurityNumber == socialSecurityNrInput);
 
     if (foundPersonIndex != -1) {
-      await personRepository.deletePerson(socialSecurityNrInput);
-      print('\nFöljande personer är kvar i listan\n');
-      await personRepository.getAllPersons();
-
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
+      await personRepository.deletePerson(personList[foundPersonIndex]);
       setMainPage();
     } else {
       getBackToMainPage('Finns ingen person med det angivna personnumret');

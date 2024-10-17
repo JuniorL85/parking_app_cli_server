@@ -17,8 +17,8 @@ final _router = Router()
   ..get('/persons', _getAllPersons)
   ..get('/persons/<id>', _getPersonById)
   ..post('/persons', _createPerson)
-  ..put('/persons/<id>', _updatePerson)
-  ..delete('/persons/<id>', _deletePerson);
+  ..put('/persons', _updatePerson)
+  ..delete('/persons', _deletePerson);
 
 Future<Response> _getAllPersons(Request req) async {
   final persons = personRepo.getAllPersons().map((p) => p.toJson()).toList();
@@ -69,7 +69,7 @@ Future<Response> _deletePerson(Request req) async {
   final json = jsonDecode(data);
   final person = Person.fromJson(json);
 
-  personRepo.deletePerson(person.id);
+  personRepo.deletePerson(person.socialSecurityNumber);
 
   return Response.ok('Person with id: ${person.id} deleted!');
 }

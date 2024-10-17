@@ -82,10 +82,10 @@ class SetMain {
           break;
         case 5:
           stdout.write(
-              'Du valde att avsluta, tack för att du använde Parkeringsappen!');
+              'Du valde att avsluta, tack för att du använde Parkeringsappen!\n');
           return;
         default:
-          print('Ogiltigt val');
+          print('Ogiltigt val\n');
           return;
       }
     }

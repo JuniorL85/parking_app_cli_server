@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:collection/src/iterable_extensions.dart';
-
 import '../logic/set_main.dart';
 import '../models/person.dart';
 import 'vehicle_repo.dart';
@@ -29,10 +27,14 @@ class PersonRepository extends SetMain {
   Future<dynamic> addPerson(Person person) async {
     final uri = Uri.parse('$host:$port/$resource');
 
-    await http.post(uri,
+    final response = await http.post(uri,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(person.serialize(person)));
-    // return personList.add(person);
+
+    if (response.statusCode == 200) {
+      print(
+          'Person uppdaterat, välj att se alla i menyn för att se uppdateringen');
+    }
   }
 
   Future<dynamic> getAllPersons() async {
@@ -43,51 +45,32 @@ class PersonRepository extends SetMain {
 
     final json = jsonDecode(response.body);
 
-    print(json);
-
     return (json as List).map((person) => Person.fromJson(person)).toList();
-    // if (personList.isNotEmpty) {
-    //   for (var (index, person) in personList.indexed) {
-    //     print(
-    //         '${index + 1}. Id: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}\n');
-    //   }
-    // } else {
-    //   print('Inga personer att visa i nuläget. Testa att lägga till personer.');
-    // }
   }
 
   Future<dynamic> updatePersons(Person person) async {
-    final foundPersonIndex = personList.indexWhere(
-        (pers) => pers.socialSecurityNumber == person.socialSecurityNumber);
+    final uri = Uri.parse('$host:$port/$resource');
 
-    if (foundPersonIndex == -1) {
-      getBackToMainPage('Finns ingen person med det angivna personnumret');
+    final response = await http.put(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(person.serialize(person)));
+
+    if (response.statusCode == 200) {
+      print(
+          'Person uppdaterad, välj att se alla i menyn för att se uppdateringen');
     }
-
-    return personList[foundPersonIndex] = person;
   }
 
-  Future<dynamic> deletePerson(String socialSecurityNumber) async {
-    final personToDelete = personList.firstWhereOrNull(
-        (person) => person.socialSecurityNumber == socialSecurityNumber);
+  Future<dynamic> deletePerson(Person person) async {
+    final uri = Uri.parse('$host:$port/$resource');
 
-    if (personToDelete != null) {
-      final personToDeleteInVehicleListIndex = vehicleRepository.vehicleList
-          .indexWhere((v) =>
-              v.owner.socialSecurityNumber ==
-              personToDelete.socialSecurityNumber);
+    final response = await http.delete(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(person.serialize(person)));
 
-      personList.remove(personToDelete);
-
-      if (personToDeleteInVehicleListIndex != -1) {
-        vehicleRepository.vehicleList
-            .removeAt(personToDeleteInVehicleListIndex);
-      }
-
-      return print(
-          'Du har raderat följande person: ${personToDelete.name} - ${personToDelete.socialSecurityNumber}');
-    } else {
-      getBackToMainPage('Finns ingen person med det angivna personnumret');
+    if (response.statusCode == 200) {
+      print(
+          'Person raderad, välj att se alla i menyn för att se uppdateringen');
     }
   }
 }

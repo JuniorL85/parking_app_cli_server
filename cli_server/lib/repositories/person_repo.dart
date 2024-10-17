@@ -60,9 +60,6 @@ class PersonRepository {
         vehicleRepository.vehicleList
             .removeAt(personToDeleteInVehicleListIndex);
       }
-
-      print(
-          'Du har raderat följande person: ${personToDelete.name} - ${personToDelete.socialSecurityNumber}');
     } else {
       // getBackToMainPage('Finns ingen person med det angivna personnumret');
     }
