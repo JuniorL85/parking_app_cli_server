@@ -7,7 +7,7 @@ import '../repositories/vehicle_repo.dart';
 import 'set_main.dart';
 
 class VehicleLogic extends SetMain {
-  final VehicleRepository vehicleRepository = VehicleRepository.instance;
+  final VehicleRepository vehicleRepository = VehicleRepository();
   final PersonRepository personRepository = PersonRepository();
 
   List<String> texts = [
@@ -38,7 +38,7 @@ class VehicleLogic extends SetMain {
         setMainPage();
         return;
       default:
-        print('Ogiltigt val');
+        print('Ogiltigt val\n');
         return;
     }
   }
@@ -70,7 +70,8 @@ class VehicleLogic extends SetMain {
 
     try {
       // Lägg till rätt person på fordon
-      final personToAdd = personRepository.personList.firstWhere(
+      final personList = await personRepository.getAllPersons();
+      final personToAdd = personList.firstWhere(
           (person) => person.socialSecurityNumber == socialSecurityNumberInput);
 
       stdout.write('Fyll i registreringsnummer: ');
@@ -123,10 +124,6 @@ class VehicleLogic extends SetMain {
         vehicleType: vehicleType,
         owner: personToAdd,
       ));
-      await vehicleRepository.getAllVehicles();
-
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
       setMainPage();
     } catch (error) {
       stdout.write('Felaktigt personnummer du omdirigeras till huvudmenyn\n');
@@ -136,8 +133,15 @@ class VehicleLogic extends SetMain {
   }
 
   void _showAllVehiclesLogic() async {
-    print('\nDu har valt att se alla fordon:\n');
-    await vehicleRepository.getAllVehicles();
+    final vehicleList = await vehicleRepository.getAllVehicles();
+    if (vehicleList.isNotEmpty) {
+      for (var vehicle in vehicleList) {
+        print(
+            'Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType.name}\n');
+      }
+    } else {
+      print('Finns inga fordon att visa just nu....');
+    }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
     setMainPage();
@@ -145,12 +149,11 @@ class VehicleLogic extends SetMain {
 
   void _updateVehiclesLogic() async {
     print('\nDu har valt att uppdatera ett fordon\n');
-    if (vehicleRepository.vehicleList.isEmpty) {
+    final vehicleList = await vehicleRepository.getAllVehicles();
+    if (vehicleList.isEmpty) {
       getBackToMainPage(
           'Finns inga fordon att uppdatera, testa att lägga till ett fordon först');
     }
-
-    await vehicleRepository.getAllVehicles();
 
     stdout.write('Fyll i registreringsnummer på fordonet du vill uppdatera: ');
     var regNrInput = stdin.readLineSync()!.toUpperCase();
@@ -168,19 +171,18 @@ class VehicleLogic extends SetMain {
     }
 
     final foundVehicleIndex =
-        vehicleRepository.vehicleList.indexWhere((p) => p.regNr == regNrInput);
+        vehicleList.indexWhere((p) => p.regNr == regNrInput);
 
     if (foundVehicleIndex != -1) {
-      final vehicleOwnerInfo = vehicleRepository.vehicleList
+      final vehicleOwnerInfo = vehicleList
           .where((p) => p.regNr == regNrInput)
           .map((v) => Person(
               name: v.owner.name,
               socialSecurityNumber: v.owner.socialSecurityNumber))
           .first;
 
-      VehicleType vehicleType = vehicleRepository.vehicleList
-          .firstWhere((v) => v.regNr == regNrInput)
-          .vehicleType;
+      VehicleType vehicleType =
+          vehicleList.firstWhere((v) => v.regNr == regNrInput).vehicleType;
 
       print('Vänligen fyll i det nya registreringsnumret på fordonet: ');
       var regnr = stdin.readLineSync()!.toUpperCase();
@@ -198,12 +200,6 @@ class VehicleLogic extends SetMain {
             ),
             regNrInput);
       }
-
-      print('\nFöljande fordon är kvar i listan\n');
-      await vehicleRepository.getAllVehicles();
-
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
       setMainPage();
     } else {
       getBackToMainPage('Du har angett ett felaktigt registreringsnummer');
@@ -212,12 +208,11 @@ class VehicleLogic extends SetMain {
 
   void _deleteVehicleLogic() async {
     print('\nDu har valt att ta bort ett fordon\n');
-    if (vehicleRepository.vehicleList.isEmpty) {
+    final vehicleList = await vehicleRepository.getAllVehicles();
+    if (vehicleList.isEmpty) {
       getBackToMainPage(
           'Finns inga fordon att radera, testa att lägga till ett fordon först');
     }
-
-    await vehicleRepository.getAllVehicles();
 
     stdout.write('Fyll i registreringsnummer: ');
     var regNrInput = stdin.readLineSync();
@@ -235,15 +230,10 @@ class VehicleLogic extends SetMain {
     }
 
     final foundVehicleIndex =
-        vehicleRepository.vehicleList.indexWhere((p) => p.regNr == regNrInput);
+        vehicleList.indexWhere((p) => p.regNr == regNrInput);
 
     if (foundVehicleIndex != -1) {
-      await vehicleRepository.deleteVehicle(regNrInput.toUpperCase());
-      print('\nFöljande fordon är kvar i listan\n');
-      await vehicleRepository.getAllVehicles();
-
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
+      await vehicleRepository.deleteVehicle(vehicleList[foundVehicleIndex]);
       setMainPage();
     } else {
       getBackToMainPage('Du har angett ett felaktigt registreringsnummer');

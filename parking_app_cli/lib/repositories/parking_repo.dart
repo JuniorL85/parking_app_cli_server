@@ -8,7 +8,7 @@ class ParkingRepository extends SetMain {
 
   static final instance = ParkingRepository._privateConstructor();
 
-  final VehicleRepository vehicleRepository = VehicleRepository.instance;
+  final VehicleRepository vehicleRepository = VehicleRepository();
   final ParkingSpaceRepository parkingSpaceRepository =
       ParkingSpaceRepository.instance;
 

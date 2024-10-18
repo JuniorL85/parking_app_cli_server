@@ -1,11 +1,19 @@
+import 'dart:convert';
+
 import '../logic/set_main.dart';
 import '../models/person.dart';
 import '../models/vehicle.dart';
+import 'package:http/http.dart' as http;
 
 class VehicleRepository extends SetMain {
-  VehicleRepository._privateConstructor();
+  String host;
+  String port;
+  String resource;
 
-  static final instance = VehicleRepository._privateConstructor();
+  VehicleRepository(
+      {this.resource = 'vehicles',
+      this.host = 'http://localhost',
+      this.port = '8080'});
 
   List<Vehicle> vehicleList = [
     Vehicle(
@@ -19,39 +27,52 @@ class VehicleRepository extends SetMain {
   ];
 
   Future<dynamic> addVehicle(Vehicle vehicle) async {
-    return vehicleList.add(vehicle);
+    final uri = Uri.parse('$host:$port/$resource');
+
+    final response = await http.post(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(vehicle.serialize(vehicle)));
+
+    if (response.statusCode == 200) {
+      print(
+          'Fordon uppdaterat, välj att se alla i menyn för att se uppdateringen');
+    }
   }
 
   Future<dynamic> getAllVehicles() async {
-    if (vehicleList.isNotEmpty) {
-      for (var (index, vehicle) in vehicleList.indexed) {
-        print(
-            '${index + 1}. Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType.name}\n');
-      }
-    } else {
-      print('Finns inga fordon att visa just nu....');
-    }
+    final uri = Uri.parse('$host:$port/$resource');
+
+    final response =
+        await http.get(uri, headers: {'Content-Type': 'application/json'});
+
+    final json = jsonDecode(response.body);
+
+    return (json as List).map((vehicle) => Vehicle.fromJson(vehicle)).toList();
   }
 
   Future<dynamic> updateVehicles(Vehicle vehicle, oldRegNr) async {
-    final foundVehicleIndex =
-        vehicleList.indexWhere((v) => v.regNr == oldRegNr);
+    final uri = Uri.parse('$host:$port/$resource/$oldRegNr');
 
-    if (foundVehicleIndex == -1) {
-      getBackToMainPage(
-          'Finns inget fordon med det angivna registreringsnumret');
+    final response = await http.put(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(vehicle.serialize(vehicle)));
+
+    if (response.statusCode == 200) {
+      print(
+          'Fordon uppdaterad, välj att se alla i menyn för att se uppdateringen');
     }
-
-    return vehicleList[foundVehicleIndex] = vehicle;
   }
 
-  Future<dynamic> deleteVehicle(String regNr) async {
-    final vehicleToDelete =
-        vehicleList.firstWhere((vehicle) => vehicle.regNr == regNr);
+  Future<dynamic> deleteVehicle(Vehicle vehicle) async {
+    final uri = Uri.parse('$host:$port/$resource');
 
-    vehicleList.remove(vehicleToDelete);
+    final response = await http.delete(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(vehicle.serialize(vehicle)));
 
-    return print(
-        'Du har raderat följande fordon: ${vehicleToDelete.regNr} - ${vehicleToDelete.vehicleType.name}');
+    if (response.statusCode == 200) {
+      print(
+          'Person raderad, välj att se alla i menyn för att se uppdateringen');
+    }
   }
 }

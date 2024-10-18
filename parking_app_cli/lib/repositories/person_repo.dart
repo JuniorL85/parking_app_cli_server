@@ -15,7 +15,7 @@ class PersonRepository extends SetMain {
       this.host = 'http://localhost',
       this.port = '8080'});
 
-  final VehicleRepository vehicleRepository = VehicleRepository.instance;
+  final VehicleRepository vehicleRepository = VehicleRepository();
 
   List<Person> personList = [
     Person(
@@ -33,7 +33,7 @@ class PersonRepository extends SetMain {
 
     if (response.statusCode == 200) {
       print(
-          'Person uppdaterat, välj att se alla i menyn för att se uppdateringen');
+          'Person tillagd, välj att se alla i menyn för att se uppdateringen');
     }
   }
 

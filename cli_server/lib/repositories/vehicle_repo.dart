@@ -17,22 +17,23 @@ class VehicleRepository {
     )
   ];
 
-  Future<dynamic> addVehicle(Vehicle vehicle) async {
-    return vehicleList.add(vehicle);
+  void addVehicle(Vehicle vehicle) {
+    vehicleList.add(vehicle);
   }
 
-  Future<dynamic> getAllVehicles() async {
-    if (vehicleList.isNotEmpty) {
-      for (var (index, vehicle) in vehicleList.indexed) {
-        print(
-            '${index + 1}. Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType.name}\n');
-      }
-    } else {
-      print('Finns inga fordon att visa just nu....');
-    }
+  getAllVehicles() {
+    // if (vehicleList.isNotEmpty) {
+    //   for (var (index, vehicle) in vehicleList.indexed) {
+    //     print(
+    //         '${index + 1}. Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType.name}\n');
+    //   }
+    // } else {
+    //   print('Finns inga fordon att visa just nu....');
+    // }
+    return vehicleList;
   }
 
-  Future<dynamic> updateVehicles(Vehicle vehicle, oldRegNr) async {
+  void updateVehicles(Vehicle vehicle, oldRegNr) {
     final foundVehicleIndex =
         vehicleList.indexWhere((v) => v.regNr == oldRegNr);
 
@@ -41,16 +42,16 @@ class VehicleRepository {
       //     'Finns inget fordon med det angivna registreringsnumret');
     }
 
-    return vehicleList[foundVehicleIndex] = vehicle;
+    vehicleList[foundVehicleIndex] = vehicle;
   }
 
-  Future<dynamic> deleteVehicle(String regNr) async {
+  void deleteVehicle(Vehicle vehicle) {
     final vehicleToDelete =
-        vehicleList.firstWhere((vehicle) => vehicle.regNr == regNr);
+        vehicleList.firstWhere((v) => v.regNr == vehicle.regNr);
 
     vehicleList.remove(vehicleToDelete);
 
-    return print(
-        'Du har raderat följande fordon: ${vehicleToDelete.regNr} - ${vehicleToDelete.vehicleType.name}');
+    // return print(
+    //     'Du har raderat följande fordon: ${vehicleToDelete.regNr} - ${vehicleToDelete.vehicleType.name}');
   }
 }

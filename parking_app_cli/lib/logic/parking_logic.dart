@@ -9,7 +9,7 @@ class ParkingLogic extends SetMain {
   final ParkingRepository parkingRepository = ParkingRepository.instance;
   final ParkingSpaceRepository parkingSpaceRepository =
       ParkingSpaceRepository.instance;
-  final VehicleRepository vehicleRepository = VehicleRepository.instance;
+  final VehicleRepository vehicleRepository = VehicleRepository();
 
   List<String> texts = [
     'Du har valt att hantera Parkeringar. Vad vill du göra?\n',

@@ -78,7 +78,6 @@ class PersonLogic extends SetMain {
   }
 
   _showAllPersonsLogic() async {
-    // print('\nDu har valt att se alla personer:\n');
     final personList = await personRepository.getAllPersons();
     if (personList.isNotEmpty) {
       for (var person in personList) {
@@ -95,7 +94,8 @@ class PersonLogic extends SetMain {
 
   void _updatePersonsLogic() async {
     print('\nDu har valt att uppdatera en person\n');
-    if (personRepository.personList.isEmpty) {
+    final personList = await personRepository.getAllPersons();
+    if (personList.isEmpty) {
       getBackToMainPage(
           'Finns inga personer att uppdatera, testa att lägga till en person först');
     }
@@ -115,7 +115,6 @@ class PersonLogic extends SetMain {
       return;
     }
 
-    final personList = await personRepository.getAllPersons();
     final foundPersonIndex = personList
         .indexWhere((i) => i.socialSecurityNumber == socialSecurityNrInput);
 
@@ -139,7 +138,8 @@ class PersonLogic extends SetMain {
 
   void _deletePersonLogic() async {
     print('\nDu har valt att ta bort en person\n');
-    if (personRepository.personList.isEmpty) {
+    final personList = await personRepository.getAllPersons();
+    if (personList.isEmpty) {
       getBackToMainPage(
           'Finns inga personer att radera, testa att lägga till en person först');
     }
@@ -158,7 +158,6 @@ class PersonLogic extends SetMain {
       return;
     }
 
-    final personList = await personRepository.getAllPersons();
     final foundPersonIndex = personList
         .indexWhere((i) => i.socialSecurityNumber == socialSecurityNrInput);
 
