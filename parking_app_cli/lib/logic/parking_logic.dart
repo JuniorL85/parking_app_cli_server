@@ -8,7 +8,7 @@ import 'set_main.dart';
 class ParkingLogic extends SetMain {
   final ParkingRepository parkingRepository = ParkingRepository.instance;
   final ParkingSpaceRepository parkingSpaceRepository =
-      ParkingSpaceRepository.instance;
+      ParkingSpaceRepository();
   final VehicleRepository vehicleRepository = VehicleRepository();
 
   List<String> texts = [

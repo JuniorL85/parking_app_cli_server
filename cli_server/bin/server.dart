@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cli_server/models/parking_space.dart';
 import 'package:cli_server/models/person.dart';
 import 'package:cli_server/models/vehicle.dart';
+import 'package:cli_server/repositories/parking_space_repo.dart';
 import 'package:cli_server/repositories/person_repo.dart';
 import 'package:cli_server/repositories/vehicle_repo.dart';
 import 'package:shelf/shelf.dart';
@@ -15,6 +17,7 @@ const _jsonHeaders = {
 
 final personRepo = PersonRepository.instance;
 final vehicleRepo = VehicleRepository.instance;
+final parkingSpaceRepo = ParkingSpaceRepository.instance;
 // Configure routes.
 final _router = Router()
   ..get('/persons', _getAllPersons)
@@ -26,7 +29,12 @@ final _router = Router()
   ..get('/vehicles/<id>', _getVehicleById)
   ..post('/vehicles', _createVehicle)
   ..put('/vehicles', _updateVehicle)
-  ..delete('/vehicles', _deleteVehicle);
+  ..delete('/vehicles', _deleteVehicle)
+  ..get('/parkingSpaces', _getAllParkingSpaces)
+  ..get('/parkingSpaces/<id>', _getParkingSpaceById)
+  ..post('/parkingSpaces', _createParkingSpace)
+  ..put('/parkingSpaces', _updateParkingSpace)
+  ..delete('/parkingSpaces', _deleteParkingSpace);
 
 Future<Response> _getAllPersons(Request req) async {
   final persons = personRepo.getAllPersons().map((p) => p.toJson()).toList();
@@ -135,6 +143,61 @@ Future<Response> _deleteVehicle(Request req) async {
   vehicleRepo.deleteVehicle(vehicle);
 
   return Response.ok('Vehicle with id: ${vehicle.id} deleted!');
+}
+
+Future<Response> _getAllParkingSpaces(Request req) async {
+  final parkingSpaces =
+      parkingSpaceRepo.getAllParkingSpaces().map((p) => p.toJson()).toList();
+  return Response.ok(
+    jsonEncode(parkingSpaces),
+    headers: _jsonHeaders,
+  );
+}
+
+Future<Response> _getParkingSpaceById(Request req) async {
+  final data = await req.readAsString();
+  final json = jsonDecode(data);
+  final parkingSpace = ParkingSpace.fromJson(json);
+
+  final parkingSpaces = parkingSpaceRepo
+      .getAllParkingSpaces()
+      .where((p) => p.id == parkingSpace.id)
+      .map((p) => p.toJson())
+      .toList();
+  return Response.ok(
+    jsonEncode(parkingSpaces),
+    headers: _jsonHeaders,
+  );
+}
+
+Future<Response> _createParkingSpace(Request req) async {
+  final data = await req.readAsString();
+  final json = jsonDecode(data);
+  final parkingSpace = ParkingSpace.fromJson(json);
+
+  parkingSpaceRepo.addParkingSpace(parkingSpace);
+
+  return Response.ok('ParkingSpace added!');
+}
+
+Future<Response> _updateParkingSpace(Request req) async {
+  final data = await req.readAsString();
+  final json = jsonDecode(data);
+  final parkingSpace = ParkingSpace.fromJson(json);
+
+  parkingSpaceRepo.updateParkingSpace(parkingSpace);
+
+  return Response.ok('ParkingSpace with id: ${parkingSpace.id} updated!');
+}
+
+Future<Response> _deleteParkingSpace(Request req) async {
+  final data = await req.readAsString();
+  final json = jsonDecode(data);
+  final parkingSpace = ParkingSpace.fromJson(json);
+
+  parkingSpaceRepo.deleteParkingSpace(parkingSpace);
+
+  return Response.ok('ParkingSpace with id: ${parkingSpace.id} deleted!');
 }
 
 void main(List<String> args) async {

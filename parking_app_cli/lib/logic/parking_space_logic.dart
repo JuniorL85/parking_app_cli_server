@@ -6,7 +6,7 @@ import 'set_main.dart';
 
 class ParkingSpaceLogic extends SetMain {
   final ParkingSpaceRepository parkingSpaceRepository =
-      ParkingSpaceRepository.instance;
+      ParkingSpaceRepository();
 
   List<String> texts = [
     'Du har valt att hantera Parkeringsplatser. Vad vill du göra?\n',
@@ -74,18 +74,27 @@ class ParkingSpaceLogic extends SetMain {
 
     final pricePerHourFormatted = int.parse(pricePerHourInput);
 
-    await parkingSpaceRepository.addParkingSpace(ParkingSpace(
+    final res = await parkingSpaceRepository.addParkingSpace(ParkingSpace(
         address: addressInput, pricePerHour: pricePerHourFormatted));
-    await parkingSpaceRepository.getAllParkingSpaces();
-
-    stdout.write('Tryck på något för att komma till huvudmenyn');
-    stdin.readLineSync();
+    if (res.statusCode == 200) {
+      print(
+          'Parkeringsplats tillagd, välj att se alla i menyn för att se parkeringsplatser');
+    } else {
+      print('Något gick fel du omdirigeras till huvudmenyn');
+    }
     setMainPage();
   }
 
   void _showAllParkingSpacesLogic() async {
-    print('\nDu har valt att se alla parkeringsplatser:\n');
-    await parkingSpaceRepository.getAllParkingSpaces();
+    final parkingSpaceList = await parkingSpaceRepository.getAllParkingSpaces();
+    if (parkingSpaceList.isNotEmpty) {
+      for (var parkingSpace in parkingSpaceList) {
+        print(
+            'Id: ${parkingSpace.id}\n Adress: ${parkingSpace.address}\n Pris per timme: ${parkingSpace.pricePerHour}\n');
+      }
+    } else {
+      print('Inga parkeringsplatser att visa för tillfället....');
+    }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
     setMainPage();
@@ -93,11 +102,11 @@ class ParkingSpaceLogic extends SetMain {
 
   void _updateParkingSpacesLogic() async {
     print('\nDu har valt att uppdatera en parkeringsplats\n');
-    if (parkingSpaceRepository.parkingSpaceList.isEmpty) {
+    final parkingSpaceList = await parkingSpaceRepository.getAllParkingSpaces();
+    if (parkingSpaceList.isEmpty) {
       getBackToMainPage(
           'Finns inga parkeringsplatser att uppdatera, testa att lägga till en parkeringsplats först');
     }
-    await parkingSpaceRepository.getAllParkingSpaces();
 
     stdout.write('Fyll i id för parkeringsplatsen du vill uppdatera: ');
     var parkingPlaceIdInput = stdin.readLineSync();
@@ -113,12 +122,11 @@ class ParkingSpaceLogic extends SetMain {
       return;
     }
 
-    final foundParkingSpaceIdIndex = parkingSpaceRepository.parkingSpaceList
-        .indexWhere((i) => i.id == parkingPlaceIdInput);
+    final foundParkingSpaceIdIndex =
+        parkingSpaceList.indexWhere((i) => i.id == parkingPlaceIdInput);
 
     if (foundParkingSpaceIdIndex != -1) {
-      ParkingSpace oldParkingSpace =
-          parkingSpaceRepository.parkingSpaceList[foundParkingSpaceIdIndex];
+      ParkingSpace oldParkingSpace = parkingSpaceList[foundParkingSpaceIdIndex];
 
       print(
           'Vill du uppdatera parkeringsplatsens adress? Annars tryck Enter: ');
@@ -144,16 +152,17 @@ class ParkingSpaceLogic extends SetMain {
         print('Du har ändrat pris per timme till $updatedPph!');
       }
 
-      await parkingSpaceRepository.updateParkingSpace(ParkingSpace(
+      final res = await parkingSpaceRepository.updateParkingSpace(ParkingSpace(
           id: parkingPlaceIdInput,
           address: updatedAddress,
           pricePerHour: updatedPph));
 
-      print('\nFöljande parkeringsplatser är kvar i listan\n');
-      await parkingSpaceRepository.getAllParkingSpaces();
-
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
+      if (res.statusCode == 200) {
+        print(
+            'Parkeringsplats uppdaterad, välj att se alla i menyn för att se parkeringsplatser');
+      } else {
+        print('Något gick fel du omdirigeras till huvudmenyn');
+      }
       setMainPage();
     } else {
       getBackToMainPage('Du angav ett felaktigt id');
@@ -162,11 +171,11 @@ class ParkingSpaceLogic extends SetMain {
 
   void _deleteParkingSpaceLogic() async {
     print('\nDu har valt att ta bort en parkeringsplats\n');
-    if (parkingSpaceRepository.parkingSpaceList.isEmpty) {
+    final parkingSpaceList = await parkingSpaceRepository.getAllParkingSpaces();
+    if (parkingSpaceList.isEmpty) {
       getBackToMainPage(
           'Finns inga parkeringsplatser att radera, testa att lägga till en parkeringsplats först');
     }
-    await parkingSpaceRepository.getAllParkingSpaces();
 
     stdout.write('Fyll i id för parkeringsplatsen: ');
     var parkingPlaceIdInput = stdin.readLineSync();
@@ -182,16 +191,19 @@ class ParkingSpaceLogic extends SetMain {
       return;
     }
 
-    final foundParkingSpaceIdIndex = parkingSpaceRepository.parkingSpaceList
-        .indexWhere((i) => i.id == parkingPlaceIdInput);
+    final foundParkingSpaceIdIndex =
+        parkingSpaceList.indexWhere((i) => i.id == parkingPlaceIdInput);
 
     if (foundParkingSpaceIdIndex != -1) {
-      await parkingSpaceRepository.deleteParkingSpace(parkingPlaceIdInput);
-      print('\nFöljande parkeringsplatser är kvar i listan\n');
-      await parkingSpaceRepository.getAllParkingSpaces();
+      final res = await parkingSpaceRepository
+          .deleteParkingSpace(parkingSpaceList[foundParkingSpaceIdIndex]);
 
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
+      if (res.statusCode == 200) {
+        print(
+            'Parkeringsplats raderad, välj att se alla i menyn för att se parkeringsplatser');
+      } else {
+        print('Något gick fel du omdirigeras till huvudmenyn');
+      }
       setMainPage();
     } else {
       getBackToMainPage('Du angav ett felaktigt id');

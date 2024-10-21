@@ -10,7 +10,7 @@ class ParkingRepository extends SetMain {
 
   final VehicleRepository vehicleRepository = VehicleRepository();
   final ParkingSpaceRepository parkingSpaceRepository =
-      ParkingSpaceRepository.instance;
+      ParkingSpaceRepository();
 
   List<Parking> parkingList = [];
 

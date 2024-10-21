@@ -12,22 +12,15 @@ class ParkingSpaceRepository {
     )
   ];
 
-  Future<dynamic> addParkingSpace(ParkingSpace parkingSpace) async {
-    return parkingSpaceList.add(parkingSpace);
+  void addParkingSpace(ParkingSpace parkingSpace) {
+    parkingSpaceList.add(parkingSpace);
   }
 
-  Future<dynamic> getAllParkingSpaces() async {
-    if (parkingSpaceList.isNotEmpty) {
-      for (var (index, parkingSpace) in parkingSpaceList.indexed) {
-        print(
-            '${index + 1}. Id: ${parkingSpace.id}\n Adress: ${parkingSpace.address}\n Pris per timme: ${parkingSpace.pricePerHour}\n');
-      }
-    } else {
-      print('Inga parkeringsplatser att visa för tillfället....');
-    }
+  getAllParkingSpaces() {
+    return parkingSpaceList;
   }
 
-  Future<dynamic> updateParkingSpace(ParkingSpace parkingSpace) async {
+  void updateParkingSpace(ParkingSpace parkingSpace) {
     final foundParkingSpaceIndex =
         parkingSpaceList.indexWhere((v) => v.id == parkingSpace.id);
 
@@ -35,15 +28,13 @@ class ParkingSpaceRepository {
       // getBackToMainPage('Finns ingen parkeringsplats med det angivna id');
     }
 
-    return parkingSpaceList[foundParkingSpaceIndex] = parkingSpace;
+    parkingSpaceList[foundParkingSpaceIndex] = parkingSpace;
   }
 
-  Future<dynamic> deleteParkingSpace(String parkingPlaceId) async {
+  void deleteParkingSpace(ParkingSpace parkingSpace) {
     final parkingSpaceToDelete =
-        parkingSpaceList.firstWhere((parking) => parking.id == parkingPlaceId);
+        parkingSpaceList.firstWhere((parking) => parking.id == parkingSpace.id);
 
     parkingSpaceList.remove(parkingSpaceToDelete);
-    return print(
-        'Du har raderat följande parkeringsplats: ${parkingSpaceToDelete.id} - ${parkingSpaceToDelete.address}');
   }
 }

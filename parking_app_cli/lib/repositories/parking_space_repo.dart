@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import '../logic/set_main.dart';
 import '../models/parking_space.dart';
+import 'package:http/http.dart' as http;
 
 class ParkingSpaceRepository extends SetMain {
-  ParkingSpaceRepository._privateConstructor();
+  String host;
+  String port;
+  String resource;
 
-  static final instance = ParkingSpaceRepository._privateConstructor();
+  ParkingSpaceRepository(
+      {this.resource = 'persons',
+      this.host = 'http://localhost',
+      this.port = '8080'});
 
   List<ParkingSpace> parkingSpaceList = [
     ParkingSpace(
@@ -14,37 +22,45 @@ class ParkingSpaceRepository extends SetMain {
   ];
 
   Future<dynamic> addParkingSpace(ParkingSpace parkingSpace) async {
-    return parkingSpaceList.add(parkingSpace);
+    final uri = Uri.parse('$host:$port/$resource');
+
+    final response = await http.post(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(parkingSpace.serialize(parkingSpace)));
+
+    return response;
   }
 
   Future<dynamic> getAllParkingSpaces() async {
-    if (parkingSpaceList.isNotEmpty) {
-      for (var (index, parkingSpace) in parkingSpaceList.indexed) {
-        print(
-            '${index + 1}. Id: ${parkingSpace.id}\n Adress: ${parkingSpace.address}\n Pris per timme: ${parkingSpace.pricePerHour}\n');
-      }
-    } else {
-      print('Inga parkeringsplatser att visa för tillfället....');
-    }
+    final uri = Uri.parse('$host:$port/$resource');
+
+    final response =
+        await http.get(uri, headers: {'Content-Type': 'application/json'});
+
+    final json = jsonDecode(response.body);
+
+    return (json as List)
+        .map((parkingSpaces) => ParkingSpace.fromJson(parkingSpaces))
+        .toList();
   }
 
   Future<dynamic> updateParkingSpace(ParkingSpace parkingSpace) async {
-    final foundParkingSpaceIndex =
-        parkingSpaceList.indexWhere((v) => v.id == parkingSpace.id);
+    final uri = Uri.parse('$host:$port/$resource');
 
-    if (foundParkingSpaceIndex == -1) {
-      getBackToMainPage('Finns ingen parkeringsplats med det angivna id');
-    }
+    final response = await http.put(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(parkingSpace.serialize(parkingSpace)));
 
-    return parkingSpaceList[foundParkingSpaceIndex] = parkingSpace;
+    return response;
   }
 
-  Future<dynamic> deleteParkingSpace(String parkingPlaceId) async {
-    final parkingSpaceToDelete =
-        parkingSpaceList.firstWhere((parking) => parking.id == parkingPlaceId);
+  Future<dynamic> deleteParkingSpace(ParkingSpace parkingSpace) async {
+    final uri = Uri.parse('$host:$port/$resource');
 
-    parkingSpaceList.remove(parkingSpaceToDelete);
-    return print(
-        'Du har raderat följande parkeringsplats: ${parkingSpaceToDelete.id} - ${parkingSpaceToDelete.address}');
+    final response = await http.delete(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(parkingSpace.serialize(parkingSpace)));
+
+    return response;
   }
 }
