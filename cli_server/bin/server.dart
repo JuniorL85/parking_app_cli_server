@@ -84,7 +84,6 @@ Future<Response> _deletePerson(Request req) async {
 
 Future<Response> _getAllVehicles(Request req) async {
   final vehicles = vehicleRepo.getAllVehicles().map((p) => p.toJson()).toList();
-  print(vehicles);
   return Response.ok(
     jsonEncode(vehicles),
     headers: _jsonHeaders,
@@ -122,9 +121,6 @@ Future<Response> _updateVehicle(Request req) async {
   final json = jsonDecode(data);
   final vehicle = Vehicle.fromJson(json);
   final queryParam = req.requestedUri.queryParameters;
-
-  print(queryParam['oldRegNr']);
-  print(queryParam);
 
   vehicleRepo.updateVehicles(vehicle, queryParam['oldRegNr']);
 
