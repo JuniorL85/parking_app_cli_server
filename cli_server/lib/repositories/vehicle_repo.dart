@@ -22,14 +22,6 @@ class VehicleRepository {
   }
 
   getAllVehicles() {
-    // if (vehicleList.isNotEmpty) {
-    //   for (var (index, vehicle) in vehicleList.indexed) {
-    //     print(
-    //         '${index + 1}. Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType.name}\n');
-    //   }
-    // } else {
-    //   print('Finns inga fordon att visa just nu....');
-    // }
     return vehicleList;
   }
 
@@ -50,8 +42,5 @@ class VehicleRepository {
         vehicleList.firstWhere((v) => v.regNr == vehicle.regNr);
 
     vehicleList.remove(vehicleToDelete);
-
-    // return print(
-    //     'Du har raderat följande fordon: ${vehicleToDelete.regNr} - ${vehicleToDelete.vehicleType.name}');
   }
 }

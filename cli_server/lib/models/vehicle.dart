@@ -26,20 +26,19 @@ class Vehicle {
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
-      id: json['id'] as String,
-      regNr: json['regNr'] as String,
-      vehicleType: VehicleType.values.byName(json['vehicleType']),
-      owner: Person(
-          name: json['name'] as String,
-          socialSecurityNumber: json['socialSecurityNumber'] as String),
-    );
+        id: json['id'] as String,
+        regNr: json['regNr'] as String,
+        vehicleType:
+            // json['vehicleType'] as String,
+            // VehicleType.values.firstWhere((e) => e.name == json['vehicleType']),
+            VehicleType.values.byName(json['vehicleType']),
+        owner: Person.fromJson(json['owner']));
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'regNr': regNr,
         'vehicleType': vehicleType.name,
-        'owner': Person(
-            name: owner.name, socialSecurityNumber: owner.socialSecurityNumber),
+        'owner': owner.toJson()
       };
 }

@@ -25,7 +25,7 @@ final _router = Router()
   ..get('/vehicles', _getAllVehicles)
   ..get('/vehicles/<id>', _getVehicleById)
   ..post('/vehicles', _createVehicle)
-  ..put('/vehicles/<regNr>', _updateVehicle)
+  ..put('/vehicles', _updateVehicle)
   ..delete('/vehicles', _deleteVehicle);
 
 Future<Response> _getAllPersons(Request req) async {
@@ -121,9 +121,12 @@ Future<Response> _updateVehicle(Request req) async {
   final data = await req.readAsString();
   final json = jsonDecode(data);
   final vehicle = Vehicle.fromJson(json);
-  final queryParam = req.url.queryParameters;
+  final queryParam = req.requestedUri.queryParameters;
 
-  vehicleRepo.updateVehicles(vehicle, queryParam['regNr']);
+  print(queryParam['oldRegNr']);
+  print(queryParam);
+
+  vehicleRepo.updateVehicles(vehicle, queryParam['oldRegNr']);
 
   return Response.ok('Vehicle with id: ${vehicle.id} updated!');
 }

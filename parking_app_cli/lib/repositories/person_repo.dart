@@ -31,10 +31,7 @@ class PersonRepository extends SetMain {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(person.serialize(person)));
 
-    if (response.statusCode == 200) {
-      print(
-          'Person tillagd, välj att se alla i menyn för att se uppdateringen');
-    }
+    return response;
   }
 
   Future<dynamic> getAllPersons() async {
@@ -55,10 +52,7 @@ class PersonRepository extends SetMain {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(person.serialize(person)));
 
-    if (response.statusCode == 200) {
-      print(
-          'Person uppdaterad, välj att se alla i menyn för att se uppdateringen');
-    }
+    return response;
   }
 
   Future<dynamic> deletePerson(Person person) async {
@@ -68,9 +62,6 @@ class PersonRepository extends SetMain {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(person.serialize(person)));
 
-    if (response.statusCode == 200) {
-      print(
-          'Person raderad, välj att se alla i menyn för att se uppdateringen');
-    }
+    return response;
   }
 }

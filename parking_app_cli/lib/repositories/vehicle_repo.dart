@@ -33,10 +33,7 @@ class VehicleRepository extends SetMain {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(vehicle.serialize(vehicle)));
 
-    if (response.statusCode == 200) {
-      print(
-          'Fordon uppdaterat, välj att se alla i menyn för att se uppdateringen');
-    }
+    return response;
   }
 
   Future<dynamic> getAllVehicles() async {
@@ -51,16 +48,15 @@ class VehicleRepository extends SetMain {
   }
 
   Future<dynamic> updateVehicles(Vehicle vehicle, oldRegNr) async {
-    final uri = Uri.parse('$host:$port/$resource/$oldRegNr');
+    final uri = Uri.parse('$host:$port/$resource').replace(queryParameters: {
+      'oldRegNr': oldRegNr,
+    });
 
     final response = await http.put(uri,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(vehicle.serialize(vehicle)));
 
-    if (response.statusCode == 200) {
-      print(
-          'Fordon uppdaterad, välj att se alla i menyn för att se uppdateringen');
-    }
+    return response;
   }
 
   Future<dynamic> deleteVehicle(Vehicle vehicle) async {
@@ -70,9 +66,6 @@ class VehicleRepository extends SetMain {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(vehicle.serialize(vehicle)));
 
-    if (response.statusCode == 200) {
-      print(
-          'Person raderad, välj att se alla i menyn för att se uppdateringen');
-    }
+    return response;
   }
 }

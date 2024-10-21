@@ -119,11 +119,19 @@ class VehicleLogic extends SetMain {
           break;
       }
 
-      await vehicleRepository.addVehicle(Vehicle(
+      final res = await vehicleRepository.addVehicle(Vehicle(
         regNr: regNrInput.toUpperCase(),
         vehicleType: vehicleType,
-        owner: personToAdd,
+        owner: Person(
+            name: personToAdd.name,
+            socialSecurityNumber: personToAdd.socialSecurityNumber),
       ));
+      if (res.statusCode == 200) {
+        print(
+            'Fordon tillagt, välj att se alla i menyn för att se dina fordon');
+      } else {
+        print('Något gick fel du omdirigeras till huvudmenyn');
+      }
       setMainPage();
     } catch (error) {
       stdout.write('Felaktigt personnummer du omdirigeras till huvudmenyn\n');
@@ -137,7 +145,7 @@ class VehicleLogic extends SetMain {
     if (vehicleList.isNotEmpty) {
       for (var vehicle in vehicleList) {
         print(
-            'Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType.name}\n');
+            'Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType}\n');
       }
     } else {
       print('Finns inga fordon att visa just nu....');
@@ -192,13 +200,19 @@ class VehicleLogic extends SetMain {
         print('Du gjorde ingen ändring!');
       } else {
         updatedRegnr = regnr;
-        await vehicleRepository.updateVehicles(
+        final res = await vehicleRepository.updateVehicles(
             Vehicle(
               regNr: updatedRegnr,
               vehicleType: vehicleType,
               owner: vehicleOwnerInfo,
             ),
             regNrInput);
+        if (res.statusCode == 200) {
+          print(
+              'Fordon uppdaterat, välj att se alla i menyn för att se dina fordon');
+        } else {
+          print('Något gick fel du omdirigeras till huvudmenyn');
+        }
       }
       setMainPage();
     } else {
@@ -215,16 +229,16 @@ class VehicleLogic extends SetMain {
     }
 
     stdout.write('Fyll i registreringsnummer: ');
-    var regNrInput = stdin.readLineSync();
+    var regNrInput = stdin.readLineSync()!.toUpperCase();
 
-    if (regNrInput == null || regNrInput.isEmpty) {
+    if (regNrInput.isEmpty) {
       stdout.write(
           'Du har inte fyllt i något registreringsnummer, vänligen fyll i ett registreringsnummer: ');
-      regNrInput = stdin.readLineSync();
+      regNrInput = stdin.readLineSync()!.toUpperCase();
     }
 
     // Dubbelkollar så inga tomma värden skickas
-    if (regNrInput == null || regNrInput.isEmpty) {
+    if (regNrInput.isEmpty) {
       setMainPage();
       return;
     }
@@ -233,7 +247,14 @@ class VehicleLogic extends SetMain {
         vehicleList.indexWhere((p) => p.regNr == regNrInput);
 
     if (foundVehicleIndex != -1) {
-      await vehicleRepository.deleteVehicle(vehicleList[foundVehicleIndex]);
+      final res =
+          await vehicleRepository.deleteVehicle(vehicleList[foundVehicleIndex]);
+      if (res.statusCode == 200) {
+        print(
+            'Fordon raderat, välj att se alla i menyn för att se dina fordon');
+      } else {
+        print('Något gick fel du omdirigeras till huvudmenyn');
+      }
       setMainPage();
     } else {
       getBackToMainPage('Du har angett ett felaktigt registreringsnummer');

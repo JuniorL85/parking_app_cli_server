@@ -2,7 +2,11 @@ import 'package:parking_app_cli/models/networked.dart';
 
 import 'person.dart';
 
-enum VehicleType { car, motorcycle, other }
+enum VehicleType {
+  car,
+  motorcycle,
+  other,
+}
 
 String idGenerator() {
   final now = DateTime.now();
@@ -16,11 +20,12 @@ class Vehicle extends Networked {
     required this.owner,
     String? id,
   })  : id = id ?? idGenerator(),
-        super(resource: 'persons');
+        super(resource: 'vehicles');
 
   final String id;
   final String regNr;
   final VehicleType vehicleType;
+  // final String vehicleType;
   final Person owner;
 
   @override
@@ -31,20 +36,19 @@ class Vehicle extends Networked {
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
-      id: json['id'] as String,
-      regNr: json['regNr'] as String,
-      vehicleType: VehicleType.values.byName(json['vehicleType']),
-      owner: Person(
-          name: json['name'] as String,
-          socialSecurityNumber: json['socialSecurityNumber'] as String),
-    );
+        id: json['id'] as String,
+        regNr: json['regNr'] as String,
+        vehicleType:
+            // json['vehicleType'] as String,
+            // VehicleType.values.firstWhere((e) => e.name == json['vehicleType']),
+            VehicleType.values.byName(json['vehicleType']),
+        owner: Person.fromJson(json['owner']));
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'regNr': regNr,
         'vehicleType': vehicleType.name,
-        'owner': Person(
-            name: owner.name, socialSecurityNumber: owner.socialSecurityNumber),
+        'owner': owner.toJson()
       };
 }

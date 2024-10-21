@@ -72,8 +72,14 @@ class PersonLogic extends SetMain {
       return;
     }
 
-    await personRepository.addPerson(
+    final res = await personRepository.addPerson(
         Person(name: nameInput, socialSecurityNumber: socialSecurityNrInput));
+
+    if (res.statusCode == 200) {
+      print('Person tillagd, välj att se alla i menyn för att se personer');
+    } else {
+      print('Något gick fel du omdirigeras till huvudmenyn');
+    }
     setMainPage();
   }
 
@@ -127,8 +133,14 @@ class PersonLogic extends SetMain {
         print('Du gjorde ingen ändring!');
       } else {
         updatedName = name;
-        await personRepository.updatePersons(Person(
+        final res = await personRepository.updatePersons(Person(
             name: updatedName, socialSecurityNumber: socialSecurityNrInput));
+        if (res.statusCode == 200) {
+          print(
+              'Person uppdaterad, välj att se alla i menyn för att se uppdateringen');
+        } else {
+          print('Något gick fel du omdirigeras till huvudmenyn');
+        }
       }
       setMainPage();
     } else {
@@ -162,7 +174,14 @@ class PersonLogic extends SetMain {
         .indexWhere((i) => i.socialSecurityNumber == socialSecurityNrInput);
 
     if (foundPersonIndex != -1) {
-      await personRepository.deletePerson(personList[foundPersonIndex]);
+      final res =
+          await personRepository.deletePerson(personList[foundPersonIndex]);
+
+      if (res.statusCode == 200) {
+        print('Person raderad, välj att se alla i menyn för att se personer');
+      } else {
+        print('Något gick fel du omdirigeras till huvudmenyn');
+      }
       setMainPage();
     } else {
       getBackToMainPage('Finns ingen person med det angivna personnumret');
