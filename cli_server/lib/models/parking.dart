@@ -19,4 +19,20 @@ class Parking {
   final ParkingSpace parkingSpace;
   final DateTime startTime;
   DateTime endTime;
+
+  factory Parking.fromJson(Map<String, dynamic> json) {
+    return Parking(
+      vehicle: Vehicle.fromJson(json['vehicle']),
+      parkingSpace: ParkingSpace.fromJson(json['parkingSpace']),
+      startTime: json['startTime'] as DateTime,
+      endTime: json['endTime'] as DateTime,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'vehicle': vehicle.toJson(),
+        'parkingSpace': parkingSpace.toJson(),
+        'startTime': startTime,
+        'endTime': endTime,
+      };
 }
