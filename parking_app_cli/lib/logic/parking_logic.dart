@@ -50,8 +50,15 @@ class ParkingLogic extends SetMain {
     return '$date $endTime';
   }
 
+  void _calculateDuration(startTime, endTime, pricePerHour) {
+    Duration interval = endTime.difference(startTime);
+    final price = interval.inMinutes / 60 * pricePerHour;
+    print('\nDitt pris kommer att bli: ${price.toStringAsFixed(2)}kr\n');
+  }
+
   void _addParkingLogic() async {
     print('\nDu har valt att skapa en ny parkering\n');
+    final parkingList = await parkingRepository.getAllParkings();
     stdout.write('Fyll i registreringsnummer: ');
     var regNrInput = stdin.readLineSync();
 
@@ -66,7 +73,7 @@ class ParkingLogic extends SetMain {
       return;
     }
 
-    final foundActiveParking = parkingRepository.parkingList.indexWhere(
+    final foundActiveParking = parkingList.indexWhere(
       (activeParking) => (activeParking.vehicle.regNr.toUpperCase() ==
               regNrInput!.toUpperCase() &&
           activeParking.endTime.microsecondsSinceEpoch >
@@ -78,9 +85,9 @@ class ParkingLogic extends SetMain {
           'Det finns redan en aktiv parkering på angivet regnr testa att uppdatera den istället, du skickas tillbaka till huvudsidan');
       return;
     } else {
-      final foundMatchingRegNr = vehicleRepository.vehicleList.indexWhere(
-          (vehicle) =>
-              (vehicle.regNr.toUpperCase() == regNrInput!.toUpperCase()));
+      final vehicleList = await vehicleRepository.getAllVehicles();
+      final foundMatchingRegNr = vehicleList.indexWhere((vehicle) =>
+          (vehicle.regNr.toUpperCase() == regNrInput!.toUpperCase()));
 
       if (foundMatchingRegNr != -1) {
         print('Valbara parkeringsplatser\n');
@@ -100,8 +107,10 @@ class ParkingLogic extends SetMain {
           return;
         }
 
-        final parkingSpaceIndexId = parkingSpaceRepository.parkingSpaceList
-            .indexWhere((i) => i.id == parkingPlaceIdInput);
+        final parkingSpaceList =
+            await parkingSpaceRepository.getAllParkingSpaces();
+        final parkingSpaceIndexId =
+            parkingSpaceList.indexWhere((i) => i.id == parkingPlaceIdInput);
 
         if (parkingSpaceIndexId != -1) {
           stdout.write(
@@ -128,15 +137,16 @@ class ParkingLogic extends SetMain {
             return;
           }
 
-          await parkingRepository.addParking(
-            regNrInput.toUpperCase(),
-            parkingPlaceIdInput,
-            formattedEndTimeInput,
-          );
-          await parkingRepository.getAllParkings();
+          final parking = parkingList[foundActiveParking];
 
-          stdout.write('Tryck på något för att komma till huvudmenyn');
-          stdin.readLineSync();
+          final res = await parkingRepository.addParking(parking);
+
+          if (res.statusCode == 200) {
+            print(
+                'Parkering startad, välj att se alla i menyn för att se parkeringar');
+          } else {
+            print('Något gick fel du omdirigeras till huvudmenyn');
+          }
           setMainPage();
         } else {
           getBackToMainPage('Finns ingen parkeringsplats med angivet id');
@@ -148,8 +158,30 @@ class ParkingLogic extends SetMain {
   }
 
   void _showAllParkingsLogic() async {
-    print('\nDu har valt att se alla parkeringar:\n');
-    await parkingRepository.getAllParkings();
+    final parkingList = await parkingRepository.getAllParkings();
+    if (parkingList.isNotEmpty) {
+      // finns det några aktiva i listan och tiden har gått ut så tas dessa bort
+      final foundActiveParkingIndex = parkingList.indexWhere(
+        (activeParking) => (activeParking.endTime.microsecondsSinceEpoch <
+            DateTime.now().microsecondsSinceEpoch),
+      );
+
+      if (foundActiveParkingIndex != -1) {
+        final foundActiveParking = parkingList[foundActiveParkingIndex];
+        await parkingRepository.deleteParkings(foundActiveParking);
+      }
+
+      if (parkingList.isNotEmpty) {
+        for (var park in parkingList.indexed) {
+          print(
+              'Id: ${park.id}\n Parkering: ${park.parkingSpace.address}\n Time (start and end): ${park.startTime}-${park.endTime}\n RegNr: ${park.vehicle.regNr}\n');
+        }
+      } else {
+        getBackToMainPage('');
+      }
+    } else {
+      print('Inga parkeringar att visa för tillfället.....');
+    }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
     setMainPage();
