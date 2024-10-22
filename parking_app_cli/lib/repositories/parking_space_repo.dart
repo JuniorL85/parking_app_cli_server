@@ -10,7 +10,7 @@ class ParkingSpaceRepository extends SetMain {
   String resource;
 
   ParkingSpaceRepository(
-      {this.resource = 'persons',
+      {this.resource = 'parkingSpaces',
       this.host = 'http://localhost',
       this.port = '8080'});
 
