@@ -1,32 +1,26 @@
-import 'dart:math';
+import 'package:uuid/uuid.dart';
 
-int idGenerator() {
-  Random random = Random();
-  int randomNumber = random.nextInt(10000);
-  return randomNumber;
-}
+final uuid = Uuid();
 
 class ParkingSpace {
   ParkingSpace({
     required this.address,
     required this.pricePerHour,
-    int? id,
-  }) : id = id ?? idGenerator();
+    String? id,
+  }) : id = id ?? uuid.v4();
 
-  final int id;
+  final String id;
   final String address;
   final int pricePerHour;
 
   factory ParkingSpace.fromJson(Map<String, dynamic> json) {
     return ParkingSpace(
-      id: json['id'] as int,
       address: json['address'] as String,
       pricePerHour: json['pricePerHour'] as int,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
         'address': address,
         'pricePerHour': pricePerHour,
       };

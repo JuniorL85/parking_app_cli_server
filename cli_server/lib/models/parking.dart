@@ -1,13 +1,9 @@
-import 'dart:math';
+import 'package:uuid/uuid.dart';
 
 import '../models/parking_space.dart';
 import '../models/vehicle.dart';
 
-int idGenerator() {
-  Random random = Random();
-  int randomNumber = random.nextInt(10000);
-  return randomNumber;
-}
+final uuid = Uuid();
 
 class Parking {
   Parking({
@@ -15,10 +11,10 @@ class Parking {
     required this.parkingSpace,
     required this.startTime,
     required this.endTime,
-    int? id,
-  }) : id = id ?? idGenerator();
+    String? id,
+  }) : id = id ?? uuid.v4();
 
-  final int id;
+  final String id;
   final Vehicle vehicle;
   final ParkingSpace parkingSpace;
   final DateTime startTime;
