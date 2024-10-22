@@ -6,7 +6,7 @@ import 'set_main.dart';
 
 class ParkingSpaceLogic extends SetMain {
   final ParkingSpaceRepository parkingSpaceRepository =
-      ParkingSpaceRepository();
+      ParkingSpaceRepository.instance;
 
   List<String> texts = [
     'Du har valt att hantera Parkeringsplatser. Vad vill du göra?\n',
@@ -131,7 +131,7 @@ class ParkingSpaceLogic extends SetMain {
       print(
           'Vill du uppdatera parkeringsplatsens adress? Annars tryck Enter: ');
       var addressInput = stdin.readLineSync();
-      var updatedAddress;
+      String updatedAddress;
       if (addressInput == null || addressInput.isEmpty) {
         updatedAddress = oldParkingSpace.address;
         print('Du gjorde ingen ändring!');

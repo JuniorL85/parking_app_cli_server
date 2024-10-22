@@ -5,14 +5,13 @@ import '../models/parking_space.dart';
 import 'package:http/http.dart' as http;
 
 class ParkingSpaceRepository extends SetMain {
-  String host;
-  String port;
-  String resource;
+  ParkingSpaceRepository._privateConstructor();
 
-  ParkingSpaceRepository(
-      {this.resource = 'parkingSpaces',
-      this.host = 'http://localhost',
-      this.port = '8080'});
+  static final instance = ParkingSpaceRepository._privateConstructor();
+
+  String host = 'http://localhost';
+  String port = '8080';
+  String resource = 'parkingSpaces';
 
   List<ParkingSpace> parkingSpaceList = [
     ParkingSpace(

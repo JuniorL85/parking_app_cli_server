@@ -7,8 +7,8 @@ import '../repositories/vehicle_repo.dart';
 import 'set_main.dart';
 
 class VehicleLogic extends SetMain {
-  final VehicleRepository vehicleRepository = VehicleRepository();
-  final PersonRepository personRepository = PersonRepository();
+  final VehicleRepository vehicleRepository = VehicleRepository.instance;
+  final PersonRepository personRepository = PersonRepository.instance;
 
   List<String> texts = [
     'Du har valt att hantera Fordon. Vad vill du göra?\n',
@@ -194,7 +194,7 @@ class VehicleLogic extends SetMain {
 
       print('Vänligen fyll i det nya registreringsnumret på fordonet: ');
       var regnr = stdin.readLineSync()!.toUpperCase();
-      var updatedRegnr;
+      String updatedRegnr;
       if (regnr.isEmpty) {
         updatedRegnr = '';
         print('Du gjorde ingen ändring!');

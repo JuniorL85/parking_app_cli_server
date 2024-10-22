@@ -38,7 +38,7 @@ class SetMain {
           }
           pickedMenuOption = int.parse(personInput);
 
-          final PersonLogic personLogic = new PersonLogic();
+          final PersonLogic personLogic = PersonLogic();
           personLogic.runLogic(pickedMenuOption);
           break;
         case 2:
@@ -51,7 +51,7 @@ class SetMain {
           }
           pickedMenuOption = int.parse(vehicleInput);
 
-          final VehicleLogic vehicleLogic = new VehicleLogic();
+          final VehicleLogic vehicleLogic = VehicleLogic();
           vehicleLogic.runLogic(pickedMenuOption);
           break;
         case 3:
@@ -64,7 +64,7 @@ class SetMain {
           }
           pickedMenuOption = int.parse(parkingSpaceInput);
 
-          final ParkingSpaceLogic vehicleLogic = new ParkingSpaceLogic();
+          final ParkingSpaceLogic vehicleLogic = ParkingSpaceLogic();
           vehicleLogic.runLogic(pickedMenuOption);
           break;
         case 4:
@@ -77,7 +77,7 @@ class SetMain {
           }
           pickedMenuOption = int.parse(parkingInput);
 
-          final ParkingLogic vehicleLogic = new ParkingLogic();
+          final ParkingLogic vehicleLogic = ParkingLogic();
           vehicleLogic.runLogic(pickedMenuOption);
           break;
         case 5:

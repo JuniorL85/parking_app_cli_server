@@ -8,8 +8,8 @@ import 'set_main.dart';
 class ParkingLogic extends SetMain {
   final ParkingRepository parkingRepository = ParkingRepository.instance;
   final ParkingSpaceRepository parkingSpaceRepository =
-      ParkingSpaceRepository();
-  final VehicleRepository vehicleRepository = VehicleRepository();
+      ParkingSpaceRepository.instance;
+  final VehicleRepository vehicleRepository = VehicleRepository.instance;
 
   List<String> texts = [
     'Du har valt att hantera Parkeringar. Vad vill du göra?\n',
@@ -47,7 +47,7 @@ class ParkingLogic extends SetMain {
   String _getCorrectDate(String endTime) {
     DateTime dateToday = DateTime.now();
     String date = dateToday.toString().substring(0, 10);
-    return '${date} $endTime';
+    return '$date $endTime';
   }
 
   void _addParkingLogic() async {
@@ -185,7 +185,7 @@ class ParkingLogic extends SetMain {
     if (foundParkingIndexId != -1) {
       print('Vill du uppdatera parkeringens sluttid? Annars tryck Enter: ');
       var endTimeInput = stdin.readLineSync();
-      var endTime;
+      String endTime;
       if (endTimeInput == null || endTimeInput.isEmpty) {
         endTime = '';
         print('Du gjorde ingen ändring!');

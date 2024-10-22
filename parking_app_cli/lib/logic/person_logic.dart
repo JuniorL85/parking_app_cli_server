@@ -5,7 +5,7 @@ import '../repositories/person_repo.dart';
 import 'set_main.dart';
 
 class PersonLogic extends SetMain {
-  final PersonRepository personRepository = PersonRepository();
+  final PersonRepository personRepository = PersonRepository.instance;
 
   List<String> texts = [
     'Du har valt att hantera Personer. Vad vill du göra?\n',
@@ -127,7 +127,7 @@ class PersonLogic extends SetMain {
     if (foundPersonIndex != -1) {
       print('Vill du uppdatera personens namn? Annars tryck Enter: ');
       var name = stdin.readLineSync();
-      var updatedName;
+      String updatedName;
       if (name == null || name.isEmpty) {
         updatedName = '';
         print('Du gjorde ingen ändring!');

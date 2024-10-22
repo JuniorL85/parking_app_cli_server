@@ -6,16 +6,15 @@ import 'vehicle_repo.dart';
 import 'package:http/http.dart' as http;
 
 class PersonRepository extends SetMain {
-  String host;
-  String port;
-  String resource;
+  PersonRepository._privateConstructor();
 
-  PersonRepository(
-      {this.resource = 'persons',
-      this.host = 'http://localhost',
-      this.port = '8080'});
+  static final instance = PersonRepository._privateConstructor();
 
-  final VehicleRepository vehicleRepository = VehicleRepository();
+  String host = 'http://localhost';
+  String port = '8080';
+  String resource = 'persons';
+
+  final VehicleRepository vehicleRepository = VehicleRepository.instance;
 
   List<Person> personList = [
     Person(
