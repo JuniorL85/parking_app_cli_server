@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:parking_app_cli/models/networked.dart';
 
 import 'person.dart';
@@ -8,9 +10,12 @@ enum VehicleType {
   other,
 }
 
-String idGenerator() {
-  final now = DateTime.now();
-  return now.microsecondsSinceEpoch.toString();
+int idGenerator() {
+  // final now = DateTime.now();
+  // return now.microsecondsSinceEpoch.toString();
+  Random random = Random();
+  int randomNumber = random.nextInt(10000);
+  return randomNumber;
 }
 
 class Vehicle extends Networked {
@@ -18,11 +23,11 @@ class Vehicle extends Networked {
     required this.regNr,
     required this.vehicleType,
     required this.owner,
-    String? id,
+    int? id,
   })  : id = id ?? idGenerator(),
         super(resource: 'vehicles');
 
-  final String id;
+  final int id;
   final String regNr;
   final VehicleType vehicleType;
   // final String vehicleType;
@@ -36,12 +41,9 @@ class Vehicle extends Networked {
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
-        id: json['id'] as String,
+        id: json['id'] as int,
         regNr: json['regNr'] as String,
-        vehicleType:
-            // json['vehicleType'] as String,
-            // VehicleType.values.firstWhere((e) => e.name == json['vehicleType']),
-            VehicleType.values.byName(json['vehicleType']),
+        vehicleType: VehicleType.values.byName(json['vehicleType']),
         owner: Person.fromJson(json['owner']));
   }
 

@@ -1,22 +1,25 @@
-String idGenerator() {
-  final now = DateTime.now();
-  return now.microsecondsSinceEpoch.toString();
+import 'dart:math';
+
+int idGenerator() {
+  Random random = Random();
+  int randomNumber = random.nextInt(10000);
+  return randomNumber;
 }
 
 class ParkingSpace {
   ParkingSpace({
     required this.address,
     required this.pricePerHour,
-    String? id,
+    int? id,
   }) : id = id ?? idGenerator();
 
-  final String id;
+  final int id;
   final String address;
   final int pricePerHour;
 
   factory ParkingSpace.fromJson(Map<String, dynamic> json) {
     return ParkingSpace(
-      id: json['id'] as String,
+      id: json['id'] as int,
       address: json['address'] as String,
       pricePerHour: json['pricePerHour'] as int,
     );

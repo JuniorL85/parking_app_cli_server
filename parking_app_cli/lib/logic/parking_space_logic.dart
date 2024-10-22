@@ -153,7 +153,7 @@ class ParkingSpaceLogic extends SetMain {
       }
 
       final res = await parkingSpaceRepository.updateParkingSpace(ParkingSpace(
-          id: parkingPlaceIdInput,
+          id: int.parse(parkingPlaceIdInput),
           address: updatedAddress,
           pricePerHour: updatedPph));
 

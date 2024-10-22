@@ -202,7 +202,7 @@ class ParkingLogic extends SetMain {
         }
 
         await parkingRepository.updateParkings(
-            parkingIdInput, formattedEndTimeInput);
+            int.parse(parkingIdInput), formattedEndTimeInput);
       }
 
       print('\nFöljande parkeringar är kvar i listan\n');
@@ -243,7 +243,7 @@ class ParkingLogic extends SetMain {
         .indexWhere((i) => (i.id == parkingIdInput));
 
     if (foundParkingIndexId != -1) {
-      await parkingRepository.deleteParkings(parkingIdInput);
+      await parkingRepository.deleteParkings(int.parse(parkingIdInput));
       print('\nFöljande parkeringar är kvar i listan\n');
       await parkingRepository.getAllParkings();
 

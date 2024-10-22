@@ -74,7 +74,7 @@ class ParkingRepository extends SetMain {
     }
   }
 
-  Future<dynamic> updateParkings(String parkingId, DateTime endTime) async {
+  Future<dynamic> updateParkings(int parkingId, DateTime endTime) async {
     final foundParkingIndex = parkingList.indexWhere((v) => v.id == parkingId);
 
     if (foundParkingIndex == -1) {
@@ -92,7 +92,7 @@ class ParkingRepository extends SetMain {
     );
   }
 
-  Future<dynamic> deleteParkings(String parkingId,
+  Future<dynamic> deleteParkings(int parkingId,
       {bool isFromGetAllParkings = false}) async {
     final foundParkingIndex = parkingList.indexWhere((v) => v.id == parkingId);
 

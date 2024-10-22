@@ -1,19 +1,22 @@
+import 'dart:math';
+
 import 'package:parking_app_cli/models/networked.dart';
 
-String idGenerator() {
-  final now = DateTime.now();
-  return now.microsecondsSinceEpoch.toString();
+int idGenerator() {
+  Random random = Random();
+  int randomNumber = random.nextInt(10000);
+  return randomNumber;
 }
 
 class Person extends Networked {
   Person({
     required this.name,
     required this.socialSecurityNumber,
-    String? id,
+    int? id,
   })  : id = id ?? idGenerator(),
         super(resource: 'persons');
 
-  final String id;
+  final int id;
   String name;
   String socialSecurityNumber;
 
@@ -25,7 +28,7 @@ class Person extends Networked {
 
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
-      id: json['id'] as String,
+      id: json['id'] as int,
       name: json['name'] as String,
       socialSecurityNumber: json['socialSecurityNumber'] as String,
     );

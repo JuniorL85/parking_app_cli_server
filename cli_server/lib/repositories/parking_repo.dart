@@ -91,7 +91,7 @@ class ParkingRepository {
     );
   }
 
-  Future<dynamic> deleteParkings(String parkingId,
+  Future<dynamic> deleteParkings(int parkingId,
       {bool isFromGetAllParkings = false}) async {
     final foundParkingIndex = parkingList.indexWhere((v) => v.id == parkingId);
 

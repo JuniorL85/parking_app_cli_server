@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import '../models/parking_space.dart';
 import '../models/vehicle.dart';
 
-String idGenerator() {
-  final now = DateTime.now();
-  return now.microsecondsSinceEpoch.toString();
+int idGenerator() {
+  Random random = Random();
+  int randomNumber = random.nextInt(10000);
+  return randomNumber;
 }
 
 class Parking {
@@ -12,10 +15,10 @@ class Parking {
     required this.parkingSpace,
     required this.startTime,
     required this.endTime,
-    String? id,
+    int? id,
   }) : id = id ?? idGenerator();
 
-  final String id;
+  final int id;
   final Vehicle vehicle;
   final ParkingSpace parkingSpace;
   final DateTime startTime;

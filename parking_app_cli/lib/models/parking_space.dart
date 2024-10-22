@@ -1,19 +1,22 @@
+import 'dart:math';
+
 import 'package:parking_app_cli/models/networked.dart';
 
-String idGenerator() {
-  final now = DateTime.now();
-  return now.microsecondsSinceEpoch.toString();
+int idGenerator() {
+  Random random = Random();
+  int randomNumber = random.nextInt(10000);
+  return randomNumber;
 }
 
 class ParkingSpace extends Networked {
   ParkingSpace({
     required this.address,
     required this.pricePerHour,
-    String? id,
+    int? id,
   })  : id = id ?? idGenerator(),
         super(resource: 'parkingSpace');
 
-  final String id;
+  final int id;
   final String address;
   final int pricePerHour;
 
@@ -26,7 +29,7 @@ class ParkingSpace extends Networked {
 
   factory ParkingSpace.fromJson(Map<String, dynamic> json) {
     return ParkingSpace(
-      id: json['id'] as String,
+      id: json['id'] as int,
       address: json['address'] as String,
       pricePerHour: json['pricePerHour'] as int,
     );
