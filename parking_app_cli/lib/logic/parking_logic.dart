@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:parking_app_cli/models/parking.dart';
+
 import '../repositories/parking_repo.dart';
 import '../repositories/parking_space_repo.dart';
 import '../repositories/vehicle_repo.dart';
@@ -90,9 +92,6 @@ class ParkingLogic extends SetMain {
           (vehicle.regNr.toUpperCase() == regNrInput!.toUpperCase()));
 
       if (foundMatchingRegNr != -1) {
-        print('Valbara parkeringsplatser\n');
-        parkingSpaceRepository.getAllParkingSpaces();
-
         stdout.write('Fyll i id för parkeringsplatsen: ');
         var parkingPlaceIdInput = stdin.readLineSync();
 
@@ -189,12 +188,11 @@ class ParkingLogic extends SetMain {
 
   void _updateParkingLogic() async {
     print('\nDu har valt att uppdatera en parkering\n');
-    if (parkingRepository.parkingList.isEmpty) {
+    final parkingList = await parkingRepository.getAllParkings();
+    if (parkingList.isEmpty) {
       getBackToMainPage(
           'Finns inga parkeringar att uppdatera, testa att lägga till en parkering först');
     }
-
-    await parkingRepository.getAllParkings();
 
     stdout
         .write('Fyll i id för parkeringen på parkeringen du vill uppdatera: ');
@@ -211,8 +209,8 @@ class ParkingLogic extends SetMain {
       return;
     }
 
-    final foundParkingIndexId = parkingRepository.parkingList
-        .indexWhere((i) => (i.id == parkingIdInput));
+    final foundParkingIndexId =
+        parkingList.indexWhere((i) => (i.id == parkingIdInput));
 
     if (foundParkingIndexId != -1) {
       print('Vill du uppdatera parkeringens sluttid? Annars tryck Enter: ');
@@ -233,15 +231,21 @@ class ParkingLogic extends SetMain {
           return;
         }
 
-        await parkingRepository.updateParkings(
-            parkingIdInput, formattedEndTimeInput);
+        Parking parking = parkingList[foundParkingIndexId];
+        final res = await parkingRepository.updateParkings(Parking(
+          vehicle: parking.vehicle,
+          parkingSpace: parking.parkingSpace,
+          startTime: parking.startTime,
+          endTime: formattedEndTimeInput,
+        ));
+
+        if (res.statusCode == 200) {
+          print(
+              'Parkering uppdaterad, välj att se alla i menyn för att se parkeringar');
+        } else {
+          print('Något gick fel du omdirigeras till huvudmenyn');
+        }
       }
-
-      print('\nFöljande parkeringar är kvar i listan\n');
-      await parkingRepository.getAllParkings();
-
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
       setMainPage();
     } else {
       getBackToMainPage('Finns ingen aktiv parkering med angivet id');
@@ -250,12 +254,11 @@ class ParkingLogic extends SetMain {
 
   void _deleteParkingLogic() async {
     print('\nDu har valt att ta bort en parkering\n');
-    if (parkingRepository.parkingList.isEmpty) {
+    final parkingList = await parkingRepository.getAllParkings();
+    if (parkingList.isEmpty) {
       getBackToMainPage(
           'Finns inga parkeringar att radera, testa att lägga till en parkering först');
     }
-
-    await parkingRepository.getAllParkings();
 
     stdout.write('Fyll i id för parkeringen: ');
     var parkingIdInput = stdin.readLineSync();
@@ -271,11 +274,13 @@ class ParkingLogic extends SetMain {
       return;
     }
 
-    final foundParkingIndexId = parkingRepository.parkingList
-        .indexWhere((i) => (i.id == parkingIdInput));
+    final foundParkingIndexId =
+        parkingList.indexWhere((i) => (i.id == parkingIdInput));
+
+    final parking = parkingList[foundParkingIndexId];
 
     if (foundParkingIndexId != -1) {
-      await parkingRepository.deleteParkings(parkingIdInput);
+      await parkingRepository.deleteParkings(parking);
       print('\nFöljande parkeringar är kvar i listan\n');
       await parkingRepository.getAllParkings();
 

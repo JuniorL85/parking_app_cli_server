@@ -1,24 +1,20 @@
-import 'package:parking_app_cli/models/networked.dart';
 import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
 
-class Person extends Networked {
+class Person {
   Person({
     required this.name,
     required this.socialSecurityNumber,
-    String? id,
-  })  : id = id ?? uuid.v4(),
-        super(resource: 'persons');
+    int? id,
+  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
 
-  final String id;
+  int id;
   String name;
   String socialSecurityNumber;
 
-  @override
   Person deserialize(Map<String, dynamic> json) => Person.fromJson(json);
 
-  @override
   Map<String, dynamic> serialize(item) => toJson();
 
   factory Person.fromJson(Map<String, dynamic> json) {

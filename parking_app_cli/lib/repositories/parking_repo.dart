@@ -98,37 +98,23 @@ class ParkingRepository extends SetMain {
     // }
   }
 
-  Future<dynamic> updateParkings(String parkingId, DateTime endTime) async {
-    final foundParkingIndex = parkingList.indexWhere((v) => v.id == parkingId);
+  Future<dynamic> updateParkings(Parking parking) async {
+    final uri = Uri.parse('$host:$port/$resource');
 
-    if (foundParkingIndex == -1) {
-      getBackToMainPage('Finns ingen parkering med det angivna id');
-    }
+    final response = await http.post(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(parking.serialize(parking)));
 
-    final foundParking = parkingList[foundParkingIndex];
-
-    foundParking.endTime = endTime;
-
-    return _calculateDuration(
-      foundParking.startTime,
-      foundParking.endTime,
-      foundParking.parkingSpace.pricePerHour,
-    );
+    return response;
   }
 
-  Future<dynamic> deleteParkings(String parkingId,
-      {bool isFromGetAllParkings = false}) async {
-    final foundParkingIndex = parkingList.indexWhere((v) => v.id == parkingId);
+  Future<dynamic> deleteParkings(Parking parking) async {
+    final uri = Uri.parse('$host:$port/$resource');
 
-    if (foundParkingIndex == -1) {
-      getBackToMainPage('Finns ingen parkering med det angivna id');
-    }
+    final response = await http.post(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(parking.serialize(parking)));
 
-    final removedParking = parkingList.removeAt(foundParkingIndex);
-
-    if (!isFromGetAllParkings) {
-      return print(
-          'Du har raderat följande parkering: ${removedParking.id} - ${removedParking.startTime}-${removedParking.endTime}');
-    }
+    return response;
   }
 }

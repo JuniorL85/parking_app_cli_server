@@ -1,4 +1,3 @@
-import 'package:parking_app_cli/models/networked.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/parking_space.dart';
@@ -6,15 +5,14 @@ import '../models/vehicle.dart';
 
 final uuid = Uuid();
 
-class Parking extends Networked {
+class Parking {
   Parking({
     required this.vehicle,
     required this.parkingSpace,
     required this.startTime,
     required this.endTime,
     String? id,
-  })  : id = id ?? uuid.v4(),
-        super(resource: 'parking');
+  }) : id = id ?? uuid.v4();
 
   final String id;
   final Vehicle vehicle;
@@ -22,10 +20,8 @@ class Parking extends Networked {
   final DateTime startTime;
   DateTime endTime;
 
-  @override
   Parking deserialize(Map<String, dynamic> json) => Parking.fromJson(json);
 
-  @override
   Map<String, dynamic> serialize(item) => toJson();
 
   factory Parking.fromJson(Map<String, dynamic> json) {

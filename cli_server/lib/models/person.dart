@@ -6,10 +6,10 @@ class Person {
   Person({
     required this.name,
     required this.socialSecurityNumber,
-    String? id,
-  }) : id = id ?? uuid.v4();
+    int? id,
+  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
 
-  final String id;
+  int id;
   String name;
   String socialSecurityNumber;
 
