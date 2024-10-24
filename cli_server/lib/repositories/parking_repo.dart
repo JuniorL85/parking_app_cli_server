@@ -72,8 +72,9 @@ class ParkingRepository {
     return parkingList;
   }
 
-  void updateParkings(String parkingId, DateTime endTime) {
-    final foundParkingIndex = parkingList.indexWhere((v) => v.id == parkingId);
+  void updateParkings(String regNr, DateTime endTime) {
+    final foundParkingIndex =
+        parkingList.indexWhere((v) => v.vehicle.regNr == regNr.toUpperCase());
 
     if (foundParkingIndex == -1) {
       // getBackToMainPage('Finns ingen parkering med det angivna id');
@@ -90,8 +91,9 @@ class ParkingRepository {
     );
   }
 
-  void deleteParkings(String parkingId) {
-    final foundParkingIndex = parkingList.indexWhere((v) => v.id == parkingId);
+  void deleteParkings(String regNr) {
+    final foundParkingIndex =
+        parkingList.indexWhere((v) => v.vehicle.regNr == regNr.toUpperCase());
 
     if (foundParkingIndex == -1) {
       // getBackToMainPage('Finns ingen parkering med det angivna id');

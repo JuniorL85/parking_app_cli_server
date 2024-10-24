@@ -199,23 +199,22 @@ class ParkingLogic extends SetMain {
           'Finns inga parkeringar att uppdatera, testa att lägga till en parkering först');
     }
 
-    stdout
-        .write('Fyll i id för parkeringen på parkeringen du vill uppdatera: ');
-    var parkingIdInput = stdin.readLineSync();
+    stdout.write('Fyll i registreringsnummer: ');
+    var regNrInput = stdin.readLineSync();
 
-    if (parkingIdInput == null || parkingIdInput.isEmpty) {
+    if (regNrInput == null || regNrInput.isEmpty) {
       stdout.write(
-          'Du har inte fyllt i något id för parkeringen, vänligen fyll i ett id för parkeringen: ');
-      parkingIdInput = stdin.readLineSync();
+          'Du har inte fyllt i något registreringsnummer, vänligen fyll i ett registreringsnummer: ');
+      regNrInput = stdin.readLineSync();
     }
 
-    if (parkingIdInput == null || parkingIdInput.isEmpty) {
+    if (regNrInput == null || regNrInput.isEmpty) {
       setMainPage();
       return;
     }
 
-    final foundParkingIndexId =
-        parkingList.indexWhere((i) => (i.id == parkingIdInput));
+    final foundParkingIndexId = parkingList
+        .indexWhere((i) => (i.vehicle.regNr == regNrInput!.toUpperCase()));
 
     if (foundParkingIndexId != -1) {
       print('Vill du uppdatera parkeringens sluttid? Annars tryck Enter: ');
@@ -253,7 +252,8 @@ class ParkingLogic extends SetMain {
       }
       setMainPage();
     } else {
-      getBackToMainPage('Finns ingen aktiv parkering med angivet id');
+      getBackToMainPage(
+          'Finns ingen aktiv parkering med angivet registreringsnummer');
     }
   }
 
@@ -265,31 +265,33 @@ class ParkingLogic extends SetMain {
           'Finns inga parkeringar att radera, testa att lägga till en parkering först');
     }
 
-    stdout.write('Fyll i id för parkeringen: ');
-    var parkingIdInput = stdin.readLineSync();
+    stdout.write('Fyll i registreringsnummer: ');
+    var regNrInput = stdin.readLineSync();
 
-    if (parkingIdInput == null || parkingIdInput.isEmpty) {
+    if (regNrInput == null || regNrInput.isEmpty) {
       stdout.write(
-          'Du har inte fyllt i något id för parkeringen, vänligen fyll i ett id för parkeringen: ');
-      parkingIdInput = stdin.readLineSync();
+          'Du har inte fyllt i något registreringsnummer, vänligen fyll i ett registreringsnummer: ');
+      regNrInput = stdin.readLineSync();
     }
 
-    if (parkingIdInput == null || parkingIdInput.isEmpty) {
+    if (regNrInput == null || regNrInput.isEmpty) {
       setMainPage();
       return;
     }
 
-    final foundParkingIndexId =
-        parkingList.indexWhere((i) => (i.id == parkingIdInput));
+    final foundParkingIndexId = parkingList
+        .indexWhere((i) => (i.vehicle.regNr == regNrInput!.toUpperCase()));
 
     if (foundParkingIndexId != -1) {
       final parking = parkingList[foundParkingIndexId];
-      await parkingRepository.deleteParkings(parking);
-      print('\nFöljande parkeringar är kvar i listan\n');
-      await parkingRepository.getAllParkings();
+      final res = await parkingRepository.deleteParkings(parking);
 
-      stdout.write('Tryck på något för att komma till huvudmenyn');
-      stdin.readLineSync();
+      if (res.statusCode == 200) {
+        print(
+            'Parkering avslutad, välj att se alla i menyn för att se parkeringar');
+      } else {
+        print('Något gick fel du omdirigeras till huvudmenyn');
+      }
       setMainPage();
     } else {
       getBackToMainPage('Finns ingen aktiv parkering med angivet id');

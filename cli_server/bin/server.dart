@@ -248,7 +248,7 @@ Future<Response> _updateParking(Request req) async {
   final json = jsonDecode(data);
   final parking = Parking.fromJson(json);
 
-  parkingRepo.updateParkings(parking.id, parking.endTime);
+  parkingRepo.updateParkings(parking.vehicle.regNr, parking.endTime);
 
   return Response.ok('Parking with id: ${parking.id} updated!');
 }
@@ -258,7 +258,7 @@ Future<Response> _deleteParking(Request req) async {
   final json = jsonDecode(data);
   final parking = Parking.fromJson(json);
 
-  parkingRepo.deleteParkings(parking.id);
+  parkingRepo.deleteParkings(parking.vehicle.regNr);
 
   return Response.ok('Parking with id: ${parking.id} deleted!');
 }

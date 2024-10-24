@@ -99,7 +99,7 @@ class ParkingRepository extends SetMain {
   Future<dynamic> updateParkings(Parking parking) async {
     final uri = Uri.parse('$host:$port/$resource');
 
-    final response = await http.post(uri,
+    final response = await http.put(uri,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(parking.serialize(parking)));
 
@@ -109,7 +109,7 @@ class ParkingRepository extends SetMain {
   Future<dynamic> deleteParkings(Parking parking) async {
     final uri = Uri.parse('$host:$port/$resource');
 
-    final response = await http.post(uri,
+    final response = await http.delete(uri,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(parking.serialize(parking)));
 
