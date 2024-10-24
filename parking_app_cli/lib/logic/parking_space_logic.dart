@@ -43,46 +43,72 @@ class ParkingSpaceLogic extends SetMain {
 
   void _addParkingSpaceLogic() async {
     print('\nDu har valt att skapa en ny parkeringsplats\n');
-    stdout.write('Fyll i adress: ');
-    var addressInput = stdin.readLineSync();
+    final parkingSpaceList = await parkingSpaceRepository.getAllParkingSpaces();
+    stdout.write('Fyll i önskat id: ');
+    var idInput = stdin.readLineSync();
 
-    if (addressInput == null || addressInput.isEmpty) {
+    if (idInput == null || idInput.isEmpty) {
       stdout.write(
           'Du har inte fyllt i något adress, vänligen fyll i ett adress: ');
-      addressInput = stdin.readLineSync();
+      idInput = stdin.readLineSync();
     }
 
-    if (addressInput == null || addressInput.isEmpty) {
+    if (idInput == null || idInput.isEmpty) {
       setMainPage();
       return;
     }
 
-    stdout.write('Fyll i pris per timme för parkeringsplatsen: ');
-    var pricePerHourInput = stdin.readLineSync();
+    int transformedId = int.parse(idInput);
+    final isExistingId =
+        parkingSpaceList.indexWhere((i) => i.id == transformedId);
 
-    if (pricePerHourInput == null || pricePerHourInput.isEmpty) {
-      stdout.write(
-          'Du har inte fyllt i något pris per timme för parkeringsplatsen, vänligen fyll i ett pris per timme för parkeringsplatsen: ');
-      pricePerHourInput = stdin.readLineSync();
-    }
+    if (isExistingId == -1) {
+      stdout.write('Fyll i adress: ');
+      var addressInput = stdin.readLineSync();
 
-    // Dubbelkollar så inga tomma värden skickas
-    if (pricePerHourInput == null || pricePerHourInput.isEmpty) {
+      if (addressInput == null || addressInput.isEmpty) {
+        stdout.write(
+            'Du har inte fyllt i något adress, vänligen fyll i ett adress: ');
+        addressInput = stdin.readLineSync();
+      }
+
+      if (addressInput == null || addressInput.isEmpty) {
+        setMainPage();
+        return;
+      }
+
+      stdout.write('Fyll i pris per timme för parkeringsplatsen: ');
+      var pricePerHourInput = stdin.readLineSync();
+
+      if (pricePerHourInput == null || pricePerHourInput.isEmpty) {
+        stdout.write(
+            'Du har inte fyllt i något pris per timme för parkeringsplatsen, vänligen fyll i ett pris per timme för parkeringsplatsen: ');
+        pricePerHourInput = stdin.readLineSync();
+      }
+
+      // Dubbelkollar så inga tomma värden skickas
+      if (pricePerHourInput == null || pricePerHourInput.isEmpty) {
+        setMainPage();
+        return;
+      }
+
+      final pricePerHourFormatted = int.parse(pricePerHourInput);
+
+      final res = await parkingSpaceRepository.addParkingSpace(ParkingSpace(
+          id: int.parse(idInput),
+          address: addressInput,
+          pricePerHour: pricePerHourFormatted));
+      if (res.statusCode == 200) {
+        print(
+            'Parkeringsplats tillagd, välj att se alla i menyn för att se parkeringsplatser');
+      } else {
+        print('Något gick fel du omdirigeras till huvudmenyn');
+      }
       setMainPage();
-      return;
-    }
-
-    final pricePerHourFormatted = int.parse(pricePerHourInput);
-
-    final res = await parkingSpaceRepository.addParkingSpace(ParkingSpace(
-        address: addressInput, pricePerHour: pricePerHourFormatted));
-    if (res.statusCode == 200) {
-      print(
-          'Parkeringsplats tillagd, välj att se alla i menyn för att se parkeringsplatser');
     } else {
-      print('Något gick fel du omdirigeras till huvudmenyn');
+      print('Angivet id finns redan');
+      setMainPage();
     }
-    setMainPage();
   }
 
   void _showAllParkingSpacesLogic() async {
@@ -122,8 +148,9 @@ class ParkingSpaceLogic extends SetMain {
       return;
     }
 
+    int transformedId = int.parse(parkingPlaceIdInput);
     final foundParkingSpaceIdIndex =
-        parkingSpaceList.indexWhere((i) => i.id == parkingPlaceIdInput);
+        parkingSpaceList.indexWhere((i) => i.id == transformedId);
 
     if (foundParkingSpaceIdIndex != -1) {
       ParkingSpace oldParkingSpace = parkingSpaceList[foundParkingSpaceIdIndex];
@@ -153,7 +180,7 @@ class ParkingSpaceLogic extends SetMain {
       }
 
       final res = await parkingSpaceRepository.updateParkingSpace(ParkingSpace(
-          id: parkingPlaceIdInput,
+          id: int.parse(parkingPlaceIdInput),
           address: updatedAddress,
           pricePerHour: updatedPph));
 
@@ -191,8 +218,9 @@ class ParkingSpaceLogic extends SetMain {
       return;
     }
 
+    int transformedId = int.parse(parkingPlaceIdInput);
     final foundParkingSpaceIdIndex =
-        parkingSpaceList.indexWhere((i) => i.id == parkingPlaceIdInput);
+        parkingSpaceList.indexWhere((i) => i.id == transformedId);
 
     if (foundParkingSpaceIdIndex != -1) {
       final res = await parkingSpaceRepository

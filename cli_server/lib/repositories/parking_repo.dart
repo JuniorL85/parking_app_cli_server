@@ -19,7 +19,7 @@ class ParkingRepository {
     print('\nDitt pris kommer att bli: ${price.toStringAsFixed(2)}kr\n');
   }
 
-  void addParking(String regNr, String parkingPlaceId, DateTime endTime) {
+  void addParking(String regNr, int parkingPlaceId, DateTime endTime) {
     try {
       final addVehicle = vehicleRepository.vehicleList
           .where(

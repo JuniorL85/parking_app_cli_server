@@ -16,13 +16,6 @@ class PersonRepository extends SetMain {
 
   final VehicleRepository vehicleRepository = VehicleRepository.instance;
 
-  List<Person> personList = [
-    Person(
-      name: 'Test Testsson',
-      socialSecurityNumber: '131313131313',
-    )
-  ];
-
   Future<dynamic> addPerson(Person person) async {
     final uri = Uri.parse('$host:$port/$resource');
 

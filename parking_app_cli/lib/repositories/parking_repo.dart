@@ -20,13 +20,11 @@ class ParkingRepository extends SetMain {
   final ParkingSpaceRepository parkingSpaceRepository =
       ParkingSpaceRepository.instance;
 
-  List<Parking> parkingList = [];
-
-  void _calculateDuration(startTime, endTime, pricePerHour) {
-    Duration interval = endTime.difference(startTime);
-    final price = interval.inMinutes / 60 * pricePerHour;
-    print('\nDitt pris kommer att bli: ${price.toStringAsFixed(2)}kr\n');
-  }
+  // void _calculateDuration(startTime, endTime, pricePerHour) {
+  //   Duration interval = endTime.difference(startTime);
+  //   final price = interval.inMinutes / 60 * pricePerHour;
+  //   print('\nDitt pris kommer att bli: ${price.toStringAsFixed(2)}kr\n');
+  // }
 
   Future<dynamic> addParking(Parking parking) async {
     final uri = Uri.parse('$host:$port/$resource');

@@ -13,13 +13,6 @@ class ParkingSpaceRepository extends SetMain {
   String port = '8080';
   String resource = 'parkingSpaces';
 
-  List<ParkingSpace> parkingSpaceList = [
-    ParkingSpace(
-      address: 'Testgatan 10, 546 76 Göteborg',
-      pricePerHour: 12,
-    )
-  ];
-
   Future<dynamic> addParkingSpace(ParkingSpace parkingSpace) async {
     final uri = Uri.parse('$host:$port/$resource');
 

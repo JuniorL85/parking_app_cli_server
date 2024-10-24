@@ -7,6 +7,7 @@ class ParkingSpaceRepository {
 
   List<ParkingSpace> parkingSpaceList = [
     ParkingSpace(
+      id: 1234,
       address: 'Testgatan 10, 546 76 Göteborg',
       pricePerHour: 12,
     )

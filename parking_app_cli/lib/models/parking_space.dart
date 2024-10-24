@@ -6,10 +6,10 @@ class ParkingSpace {
   ParkingSpace({
     required this.address,
     required this.pricePerHour,
-    String? id,
-  }) : id = id ?? uuid.v4();
+    required this.id,
+  });
 
-  final String id;
+  final int id;
   final String address;
   final int pricePerHour;
 
@@ -20,12 +20,14 @@ class ParkingSpace {
 
   factory ParkingSpace.fromJson(Map<String, dynamic> json) {
     return ParkingSpace(
+      id: json['id'] as int,
       address: json['address'] as String,
       pricePerHour: json['pricePerHour'] as int,
     );
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'address': address,
         'pricePerHour': pricePerHour,
       };

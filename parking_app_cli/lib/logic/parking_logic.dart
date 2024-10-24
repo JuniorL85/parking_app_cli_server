@@ -105,11 +105,11 @@ class ParkingLogic extends SetMain {
           setMainPage();
           return;
         }
-
+        int transformedId = int.parse(parkingPlaceIdInput);
         final parkingSpaceList =
             await parkingSpaceRepository.getAllParkingSpaces();
         final parkingSpaceIndexId =
-            parkingSpaceList.indexWhere((i) => i.id == parkingPlaceIdInput);
+            parkingSpaceList.indexWhere((i) => i.id == transformedId);
 
         if (parkingSpaceIndexId != -1) {
           stdout.write(
@@ -136,11 +136,16 @@ class ParkingLogic extends SetMain {
             return;
           }
 
-          final parking = parkingList[foundActiveParking];
-
-          final res = await parkingRepository.addParking(parking);
+          final res = await parkingRepository.addParking(Parking(
+            vehicle: vehicleList[foundMatchingRegNr],
+            parkingSpace: parkingSpaceList[parkingSpaceIndexId],
+            startTime: DateTime.now(),
+            endTime: formattedEndTimeInput,
+          ));
 
           if (res.statusCode == 200) {
+            _calculateDuration(DateTime.now(), formattedEndTimeInput,
+                parkingSpaceList[parkingSpaceIndexId].pricePerHour);
             print(
                 'Parkering startad, välj att se alla i menyn för att se parkeringar');
           } else {
@@ -160,18 +165,18 @@ class ParkingLogic extends SetMain {
     final parkingList = await parkingRepository.getAllParkings();
     if (parkingList.isNotEmpty) {
       // finns det några aktiva i listan och tiden har gått ut så tas dessa bort
-      final foundActiveParkingIndex = parkingList.indexWhere(
-        (activeParking) => (activeParking.endTime.microsecondsSinceEpoch <
-            DateTime.now().microsecondsSinceEpoch),
-      );
+      // final foundActiveParkingIndex = parkingList.indexWhere(
+      //   (activeParking) => (activeParking.endTime.microsecondsSinceEpoch <
+      //       DateTime.now().microsecondsSinceEpoch),
+      // );
 
-      if (foundActiveParkingIndex != -1) {
-        final foundActiveParking = parkingList[foundActiveParkingIndex];
-        await parkingRepository.deleteParkings(foundActiveParking);
-      }
+      // if (foundActiveParkingIndex != -1) {
+      //   final foundActiveParking = parkingList[foundActiveParkingIndex];
+      //   await parkingRepository.deleteParkings(foundActiveParking);
+      // }
 
       if (parkingList.isNotEmpty) {
-        for (var park in parkingList.indexed) {
+        for (var park in parkingList) {
           print(
               'Id: ${park.id}\n Parkering: ${park.parkingSpace.address}\n Time (start and end): ${park.startTime}-${park.endTime}\n RegNr: ${park.vehicle.regNr}\n');
         }
@@ -277,9 +282,8 @@ class ParkingLogic extends SetMain {
     final foundParkingIndexId =
         parkingList.indexWhere((i) => (i.id == parkingIdInput));
 
-    final parking = parkingList[foundParkingIndexId];
-
     if (foundParkingIndexId != -1) {
+      final parking = parkingList[foundParkingIndexId];
       await parkingRepository.deleteParkings(parking);
       print('\nFöljande parkeringar är kvar i listan\n');
       await parkingRepository.getAllParkings();

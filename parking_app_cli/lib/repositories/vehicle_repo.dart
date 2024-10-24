@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import '../logic/set_main.dart';
-import '../models/person.dart';
 import '../models/vehicle.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,17 +12,6 @@ class VehicleRepository extends SetMain {
   String host = 'http://localhost';
   String port = '8080';
   String resource = 'vehicles';
-
-  List<Vehicle> vehicleList = [
-    Vehicle(
-      regNr: 'CDF990',
-      vehicleType: VehicleType.car,
-      owner: Person(
-        name: 'Anders Andersson',
-        socialSecurityNumber: '197811112222',
-      ),
-    )
-  ];
 
   Future<dynamic> addVehicle(Vehicle vehicle) async {
     final uri = Uri.parse('$host:$port/$resource');

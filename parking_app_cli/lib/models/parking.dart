@@ -28,15 +28,15 @@ class Parking {
     return Parking(
       vehicle: Vehicle.fromJson(json['vehicle']),
       parkingSpace: ParkingSpace.fromJson(json['parkingSpace']),
-      startTime: json['startTime'] as DateTime,
-      endTime: json['endTime'] as DateTime,
+      startTime: DateTime.parse(json['startTime']),
+      endTime: DateTime.parse(json['endTime']),
     );
   }
 
   Map<String, dynamic> toJson() => {
         'vehicle': vehicle.toJson(),
         'parkingSpace': parkingSpace.toJson(),
-        'startTime': startTime,
-        'endTime': endTime,
+        'startTime': startTime.toIso8601String(),
+        'endTime': endTime.toIso8601String(),
       };
 }
