@@ -162,25 +162,27 @@ class ParkingLogic extends SetMain {
   }
 
   void _showAllParkingsLogic() async {
-    final parkingList = await parkingRepository.getAllParkings();
+    var parkingList = await parkingRepository.getAllParkings();
     if (parkingList.isNotEmpty) {
       // finns det några aktiva i listan och tiden har gått ut så tas dessa bort
-      // final foundActiveParkingIndex = parkingList.indexWhere(
-      //   (activeParking) => (activeParking.endTime.microsecondsSinceEpoch <
-      //       DateTime.now().microsecondsSinceEpoch),
-      // );
+      final foundActiveParkingIndex = parkingList.indexWhere(
+        (Parking activeParking) =>
+            (activeParking.endTime.microsecondsSinceEpoch <
+                DateTime.now().microsecondsSinceEpoch),
+      );
 
-      // if (foundActiveParkingIndex != -1) {
-      //   final foundActiveParking = parkingList[foundActiveParkingIndex];
-      //   await parkingRepository.deleteParkings(foundActiveParking);
-      // }
-
+      if (foundActiveParkingIndex != -1) {
+        final foundActiveParking = parkingList[foundActiveParkingIndex];
+        await parkingRepository.deleteParkings(foundActiveParking);
+      }
+      parkingList = await parkingRepository.getAllParkings();
       if (parkingList.isNotEmpty) {
         for (var park in parkingList) {
           print(
               'Id: ${park.id}\n Parkering: ${park.parkingSpace.address}\n Time (start and end): ${park.startTime}-${park.endTime}\n RegNr: ${park.vehicle.regNr}\n');
         }
       } else {
+        print('Inga parkeringar att visa för tillfället.....');
         getBackToMainPage('');
       }
     } else {

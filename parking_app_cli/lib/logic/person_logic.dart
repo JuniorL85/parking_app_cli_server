@@ -41,6 +41,7 @@ class PersonLogic extends SetMain {
   }
 
   void _addPersonLogic() async {
+    final RegExp numberRegExp = RegExp(r'\d');
     print('\nDu har valt att skapa en ny person\n');
     stdout.write('Fyll i namn: ');
     var nameInput = stdin.readLineSync();
@@ -60,27 +61,34 @@ class PersonLogic extends SetMain {
     stdout.write('Fyll i personnummer (12 siffror utan bindestreck): ');
     var socialSecurityNrInput = stdin.readLineSync();
 
-    if (socialSecurityNrInput == null || socialSecurityNrInput.isEmpty) {
-      stdout.write(
-          'Du har inte fyllt i något personnummer, vänligen fyll i ett personnummer: ');
-      socialSecurityNrInput = stdin.readLineSync();
-    }
+    if (socialSecurityNrInput != null &&
+        socialSecurityNrInput.length == 12 &&
+        numberRegExp.hasMatch(socialSecurityNrInput)) {
+      if (socialSecurityNrInput.isEmpty) {
+        stdout.write(
+            'Du har inte fyllt i något personnummer, vänligen fyll i ett personnummer: ');
+        socialSecurityNrInput = stdin.readLineSync();
+      }
 
-    // Dubbelkollar så inga tomma värden skickas
-    if (socialSecurityNrInput == null || socialSecurityNrInput.isEmpty) {
+      // Dubbelkollar så inga tomma värden skickas
+      if (socialSecurityNrInput == null || socialSecurityNrInput.isEmpty) {
+        setMainPage();
+        return;
+      }
+      final res = await personRepository.addPerson(
+          Person(name: nameInput, socialSecurityNumber: socialSecurityNrInput));
+
+      if (res.statusCode == 200) {
+        print('Person tillagd, välj att se alla i menyn för att se personer');
+      } else {
+        print('Något gick fel du omdirigeras till huvudmenyn');
+      }
       setMainPage();
-      return;
-    }
-
-    final res = await personRepository.addPerson(
-        Person(name: nameInput, socialSecurityNumber: socialSecurityNrInput));
-
-    if (res.statusCode == 200) {
-      print('Person tillagd, välj att se alla i menyn för att se personer');
     } else {
-      print('Något gick fel du omdirigeras till huvudmenyn');
+      print(
+          'Du måste ange ett personnummer med 12 siffror, du omdirigeras till huvudmenyn');
+      setMainPage();
     }
-    setMainPage();
   }
 
   _showAllPersonsLogic() async {
