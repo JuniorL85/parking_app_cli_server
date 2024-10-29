@@ -38,6 +38,7 @@ class PersonLogic extends SetMain {
         print('Ogiltigt val');
         return;
     }
+    print('\n---------------------------------\n');
   }
 
   void _addPersonLogic() async {

@@ -39,6 +39,7 @@ class ParkingSpaceLogic extends SetMain {
         print('Ogiltigt val');
         return;
     }
+    print('\n---------------------------------\n');
   }
 
   void _addParkingSpaceLogic() async {

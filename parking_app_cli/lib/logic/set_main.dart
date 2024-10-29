@@ -88,6 +88,7 @@ class SetMain {
           print('Ogiltigt val\n');
           return;
       }
+      print('\n---------------------------------\n');
     }
   }
 

@@ -44,6 +44,7 @@ class ParkingLogic extends SetMain {
         print('Ogiltigt val');
         return;
     }
+    print('\n---------------------------------\n');
   }
 
   String _getCorrectDate(String endTime) {

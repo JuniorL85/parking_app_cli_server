@@ -41,6 +41,8 @@ class VehicleLogic extends SetMain {
         print('Ogiltigt val\n');
         return;
     }
+
+    print('\n---------------------------------\n');
   }
 
   void _addVehicleLogic() async {
