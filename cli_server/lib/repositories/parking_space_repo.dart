@@ -1,4 +1,4 @@
-import '../models/parking_space.dart';
+import 'package:cli_shared/cli_shared.dart';
 
 class ParkingSpaceRepository {
   ParkingSpaceRepository._privateConstructor();

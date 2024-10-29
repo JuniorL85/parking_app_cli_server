@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cli_server/models/parking.dart';
-import 'package:cli_server/models/parking_space.dart';
-import 'package:cli_server/models/person.dart';
-import 'package:cli_server/models/vehicle.dart';
+import 'package:cli_shared/cli_shared.dart';
 import 'package:cli_server/repositories/parking_repo.dart';
 import 'package:cli_server/repositories/parking_space_repo.dart';
 import 'package:cli_server/repositories/person_repo.dart';

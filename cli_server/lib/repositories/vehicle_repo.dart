@@ -1,5 +1,4 @@
-import '../models/person.dart';
-import '../models/vehicle.dart';
+import 'package:cli_shared/cli_shared.dart';
 
 class VehicleRepository {
   VehicleRepository._privateConstructor();

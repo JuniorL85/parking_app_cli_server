@@ -1,4 +1,4 @@
-import '../models/parking.dart';
+import 'package:cli_shared/cli_shared.dart';
 import 'parking_space_repo.dart';
 import 'vehicle_repo.dart';
 

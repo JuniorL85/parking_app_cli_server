@@ -1,6 +1,6 @@
 import 'package:collection/src/iterable_extensions.dart';
 
-import '../models/person.dart';
+import 'package:cli_shared/cli_shared.dart';
 import 'vehicle_repo.dart';
 
 class PersonRepository {
