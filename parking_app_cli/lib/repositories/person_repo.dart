@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import '../logic/set_main.dart';
-import '../models/person.dart';
 import 'vehicle_repo.dart';
 import 'package:http/http.dart' as http;
+import 'package:cli_shared/cli_shared.dart';
 
 class PersonRepository extends SetMain {
   PersonRepository._privateConstructor();

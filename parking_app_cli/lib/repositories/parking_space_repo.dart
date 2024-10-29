@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import '../logic/set_main.dart';
-import '../models/parking_space.dart';
 import 'package:http/http.dart' as http;
+import 'package:cli_shared/cli_shared.dart';
 
 class ParkingSpaceRepository extends SetMain {
   ParkingSpaceRepository._privateConstructor();

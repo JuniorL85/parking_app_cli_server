@@ -1,9 +1,9 @@
 import 'package:uuid/uuid.dart';
 
-import '../models/parking_space.dart';
-import '../models/vehicle.dart';
+import 'parking_space.dart';
+import 'vehicle.dart';
 
-final uuid = Uuid();
+final _uuid = Uuid();
 
 class Parking {
   Parking({
@@ -12,7 +12,7 @@ class Parking {
     required this.startTime,
     required this.endTime,
     String? id,
-  }) : id = id ?? uuid.v4();
+  }) : id = id ?? _uuid.v4();
 
   final String id;
   final Vehicle vehicle;

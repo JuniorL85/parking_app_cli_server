@@ -8,7 +8,7 @@ enum VehicleType {
   other,
 }
 
-final uuid = Uuid();
+final _uuid = Uuid();
 
 class Vehicle {
   Vehicle({
@@ -16,7 +16,7 @@ class Vehicle {
     required this.vehicleType,
     required this.owner,
     String? id,
-  }) : id = id ?? uuid.v4();
+  }) : id = id ?? _uuid.v4();
 
   final String id;
   final String regNr;

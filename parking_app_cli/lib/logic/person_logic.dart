@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../models/person.dart';
+import 'package:cli_shared/cli_shared.dart';
 import '../repositories/person_repo.dart';
 import 'set_main.dart';
 

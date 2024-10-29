@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-final uuid = Uuid();
+final _uuid = Uuid();
 
 class ParkingSpace {
   ParkingSpace({

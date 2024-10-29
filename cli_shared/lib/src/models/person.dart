@@ -1,15 +1,15 @@
 import 'package:uuid/uuid.dart';
 
-final uuid = Uuid();
+final _uuid = Uuid();
 
 class Person {
   Person({
     required this.name,
     required this.socialSecurityNumber,
-    int? id,
-  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
+    String? id,
+  }) : id = id ?? _uuid.v4();
 
-  int id;
+  String id;
   String name;
   String socialSecurityNumber;
 

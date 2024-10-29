@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../models/parking_space.dart';
+import 'package:cli_shared/cli_shared.dart';
 import '../repositories/parking_space_repo.dart';
 import 'set_main.dart';
 
