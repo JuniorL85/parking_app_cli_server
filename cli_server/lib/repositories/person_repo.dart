@@ -51,7 +51,7 @@ class PersonRepository {
     if (personToDelete != null) {
       final personToDeleteInVehicleListIndex = vehicleRepository.vehicleList
           .indexWhere((v) =>
-              v.owner.socialSecurityNumber ==
+              v.owner!.socialSecurityNumber ==
               personToDelete.socialSecurityNumber);
 
       personList.remove(personToDelete);

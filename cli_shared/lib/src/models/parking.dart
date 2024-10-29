@@ -1,24 +1,72 @@
-import 'package:uuid/uuid.dart';
+import 'dart:convert';
+
+import 'package:objectbox/objectbox.dart';
 
 import 'parking_space.dart';
 import 'vehicle.dart';
 
-final _uuid = Uuid();
-
+@Entity()
 class Parking {
   Parking({
-    required this.vehicle,
-    required this.parkingSpace,
+    this.vehicle,
+    this.parkingSpace,
     required this.startTime,
     required this.endTime,
-    String? id,
-  }) : id = id ?? _uuid.v4();
+    int? id,
+  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
 
-  final String id;
-  final Vehicle vehicle;
-  final ParkingSpace parkingSpace;
+  @Id()
+  int id;
+  @Transient()
+  Vehicle? vehicle;
+  @Transient()
+  ParkingSpace? parkingSpace;
   final DateTime startTime;
   DateTime endTime;
+
+  String? get vehicleInDb {
+    if (vehicle == null) {
+      return null;
+    } else {
+      return jsonEncode(vehicle!.toJson());
+    }
+  }
+
+  set vehicleInDb(String? json) {
+    if (json == null) {
+      vehicle = null;
+      return;
+    }
+    var decoded = jsonDecode(json);
+
+    if (decoded != null) {
+      vehicle = Vehicle.fromJson(decoded);
+    } else {
+      vehicle = null;
+    }
+  }
+
+  String? get parkingSpaceInDb {
+    if (parkingSpace == null) {
+      return null;
+    } else {
+      return jsonEncode(parkingSpace!.toJson());
+    }
+  }
+
+  set parkingSpaceInDb(String? json) {
+    if (json == null) {
+      parkingSpace = null;
+      return;
+    }
+    var decoded = jsonDecode(json);
+
+    if (decoded != null) {
+      parkingSpace = ParkingSpace.fromJson(decoded);
+    } else {
+      parkingSpace = null;
+    }
+  }
 
   Parking deserialize(Map<String, dynamic> json) => Parking.fromJson(json);
 
@@ -26,16 +74,19 @@ class Parking {
 
   factory Parking.fromJson(Map<String, dynamic> json) {
     return Parking(
-      vehicle: Vehicle.fromJson(json['vehicle']),
-      parkingSpace: ParkingSpace.fromJson(json['parkingSpace']),
+      vehicle:
+          json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null,
+      parkingSpace: json['parkingSpace'] != null
+          ? ParkingSpace.fromJson(json['parkingSpace'])
+          : null,
       startTime: DateTime.parse(json['startTime']),
       endTime: DateTime.parse(json['endTime']),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'vehicle': vehicle.toJson(),
-        'parkingSpace': parkingSpace.toJson(),
+        'vehicle': vehicle?.toJson(),
+        'parkingSpace': parkingSpace?.toJson(),
         'startTime': startTime.toIso8601String(),
         'endTime': endTime.toIso8601String(),
       };

@@ -1,15 +1,15 @@
-import 'package:uuid/uuid.dart';
+import 'package:objectbox/objectbox.dart';
 
-final _uuid = Uuid();
-
+@Entity()
 class Person {
   Person({
     required this.name,
     required this.socialSecurityNumber,
-    String? id,
-  }) : id = id ?? _uuid.v4();
+    int? id,
+  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
 
-  String id;
+  @Id()
+  int id;
   String name;
   String socialSecurityNumber;
 

@@ -74,7 +74,7 @@ class ParkingRepository {
 
   void updateParkings(String regNr, DateTime endTime) {
     final foundParkingIndex =
-        parkingList.indexWhere((v) => v.vehicle.regNr == regNr.toUpperCase());
+        parkingList.indexWhere((v) => v.vehicle!.regNr == regNr.toUpperCase());
 
     if (foundParkingIndex == -1) {
       // getBackToMainPage('Finns ingen parkering med det angivna id');
@@ -87,13 +87,13 @@ class ParkingRepository {
     _calculateDuration(
       foundParking.startTime,
       foundParking.endTime,
-      foundParking.parkingSpace.pricePerHour,
+      foundParking.parkingSpace!.pricePerHour,
     );
   }
 
   void deleteParkings(String regNr) {
     final foundParkingIndex =
-        parkingList.indexWhere((v) => v.vehicle.regNr == regNr.toUpperCase());
+        parkingList.indexWhere((v) => v.vehicle!.regNr == regNr.toUpperCase());
 
     if (foundParkingIndex == -1) {
       // getBackToMainPage('Finns ingen parkering med det angivna id');

@@ -1,4 +1,6 @@
-import 'package:uuid/uuid.dart';
+import 'dart:convert';
+
+import 'package:objectbox/objectbox.dart';
 
 import 'person.dart';
 
@@ -8,20 +10,43 @@ enum VehicleType {
   other,
 }
 
-final _uuid = Uuid();
-
+@Entity()
 class Vehicle {
   Vehicle({
     required this.regNr,
-    required this.vehicleType,
-    required this.owner,
-    String? id,
-  }) : id = id ?? _uuid.v4();
+    this.vehicleType,
+    this.owner,
+    int? id,
+  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
 
-  final String id;
+  @Id()
+  int id;
   final String regNr;
-  final VehicleType vehicleType;
-  final Person owner;
+  VehicleType? vehicleType;
+  @Transient()
+  Person? owner;
+
+  String? get ownerInDb {
+    if (owner == null) {
+      return null;
+    } else {
+      return jsonEncode(owner!.toJson());
+    }
+  }
+
+  set ownerInDb(String? json) {
+    if (json == null) {
+      owner = null;
+      return;
+    }
+    var decoded = jsonDecode(json);
+
+    if (decoded != null) {
+      owner = Person.fromJson(decoded);
+    } else {
+      owner = null;
+    }
+  }
 
   Vehicle deserialize(Map<String, dynamic> json) => Vehicle.fromJson(json);
 
@@ -31,12 +56,12 @@ class Vehicle {
     return Vehicle(
         regNr: json['regNr'] as String,
         vehicleType: VehicleType.values.byName(json['vehicleType']),
-        owner: Person.fromJson(json['owner']));
+        owner: json['owner'] != null ? Person.fromJson(json['owner']) : null);
   }
 
   Map<String, dynamic> toJson() => {
         'regNr': regNr,
-        'vehicleType': vehicleType.name,
-        'owner': owner.toJson()
+        'vehicleType': vehicleType?.name,
+        'owner': owner?.toJson()
       };
 }
