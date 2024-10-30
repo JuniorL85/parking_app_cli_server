@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cli_server/router_config.dart';
+import 'package:cli_server/server_config.dart';
 
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';

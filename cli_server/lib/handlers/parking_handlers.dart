@@ -11,9 +11,11 @@ const _jsonHeaders = {
 final parkingRepo = ParkingRepository.instance;
 
 Future<Response> getAllParkings(Request req) async {
-  final parkings = parkingRepo.getAllParkings().map((p) => p.toJson()).toList();
+  final parkings = await parkingRepo.getAllParkings();
+
+  final parkingPayload = parkings.map((p) => p.toJson()).toList();
   return Response.ok(
-    jsonEncode(parkings),
+    jsonEncode(parkingPayload),
     headers: _jsonHeaders,
   );
 }
@@ -23,13 +25,12 @@ Future<Response> getParkingById(Request req) async {
   final json = jsonDecode(data);
   final parking = Parking.fromJson(json);
 
-  final parkings = parkingRepo
-      .getAllParkings()
-      .where((p) => p.id == parking.id)
-      .map((p) => p.toJson())
-      .toList();
+  final parkings = await parkingRepo.getAllParkings();
+
+  final parkingPayload =
+      parkings.where((p) => p.id == parking.id).map((p) => p.toJson()).toList();
   return Response.ok(
-    jsonEncode(parkings),
+    jsonEncode(parkingPayload),
     headers: _jsonHeaders,
   );
 }
@@ -39,10 +40,12 @@ Future<Response> createParking(Request req) async {
   final json = jsonDecode(data);
   final parking = Parking.fromJson(json);
 
-  parkingRepo.addParking(
-      parking.vehicle!.regNr, parking.parkingSpace!.id, parking.endTime);
+  final parkingPayload = await parkingRepo.addParking(parking);
 
-  return Response.ok('Parking added!');
+  return Response.ok(
+    jsonEncode(parkingPayload),
+    headers: _jsonHeaders,
+  );
 }
 
 Future<Response> updateParking(Request req) async {
@@ -50,9 +53,13 @@ Future<Response> updateParking(Request req) async {
   final json = jsonDecode(data);
   final parking = Parking.fromJson(json);
 
-  parkingRepo.updateParkings(parking.vehicle!.regNr, parking.endTime);
+  final parkingPayload =
+      await parkingRepo.updateParkings(parking.vehicle!.regNr, parking.endTime);
 
-  return Response.ok('Parking with id: ${parking.id} updated!');
+  return Response.ok(
+    jsonEncode(parkingPayload),
+    headers: _jsonHeaders,
+  );
 }
 
 Future<Response> deleteParking(Request req) async {
@@ -60,7 +67,10 @@ Future<Response> deleteParking(Request req) async {
   final json = jsonDecode(data);
   final parking = Parking.fromJson(json);
 
-  parkingRepo.deleteParkings(parking.vehicle!.regNr);
+  final payload = await parkingRepo.deleteParkings(parking.vehicle!.regNr);
 
-  return Response.ok('Parking with id: ${parking.id} deleted!');
+  return Response.ok(
+    jsonEncode(payload),
+    headers: _jsonHeaders,
+  );
 }

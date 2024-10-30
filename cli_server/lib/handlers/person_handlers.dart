@@ -11,27 +11,26 @@ const _jsonHeaders = {
 final personRepo = PersonRepository.instance;
 
 Future<Response> getAllPersons(Request req) async {
-  final persons = personRepo.getAllPersons().map((p) => p.toJson()).toList();
+  final persons = await personRepo.getAllPersons();
+
+  final personsPayload = persons.map((p) => p.toJson()).toList();
   return Response.ok(
-    jsonEncode(persons),
+    jsonEncode(personsPayload),
     headers: _jsonHeaders,
   );
 }
 
 Future<Response> getPersonById(Request req) async {
-  final data = await req.readAsString();
-  final json = jsonDecode(data);
-  final person = Person.fromJson(json);
+  return Response(200);
+  // final data = await req.readAsString();
+  // final json = jsonDecode(data);
+  // final person = Person.fromJson(json);
 
-  final persons = personRepo
-      .getAllPersons()
-      .where((p) => p.id == person.id)
-      .map((p) => p.toJson())
-      .toList();
-  return Response.ok(
-    jsonEncode(persons),
-    headers: _jsonHeaders,
-  );
+  // final persons = await personRepo.getAllPersons();
+  // return Response.ok(
+  //   jsonEncode(persons),
+  //   headers: _jsonHeaders,
+  // );
 }
 
 Future<Response> createPerson(Request req) async {
@@ -39,9 +38,12 @@ Future<Response> createPerson(Request req) async {
   final json = jsonDecode(data);
   final person = Person.fromJson(json);
 
-  personRepo.addPerson(person);
+  final personPayload = await personRepo.addPerson(person);
 
-  return Response.ok('Person added!');
+  return Response.ok(
+    jsonEncode(personPayload),
+    headers: _jsonHeaders,
+  );
 }
 
 Future<Response> updatePerson(Request req) async {
@@ -49,9 +51,12 @@ Future<Response> updatePerson(Request req) async {
   final json = jsonDecode(data);
   final person = Person.fromJson(json);
 
-  personRepo.updatePersons(person);
+  final personPayload = await personRepo.updatePersons(person);
 
-  return Response.ok('Person with id: ${person.id} updated!');
+  return Response.ok(
+    jsonEncode(personPayload),
+    headers: _jsonHeaders,
+  );
 }
 
 Future<Response> deletePerson(Request req) async {
@@ -59,7 +64,10 @@ Future<Response> deletePerson(Request req) async {
   final json = jsonDecode(data);
   final person = Person.fromJson(json);
 
-  personRepo.deletePerson(person.socialSecurityNumber);
+  final personPayload = await personRepo.deletePerson(person);
 
-  return Response.ok('Person with id: ${person.id} deleted!');
+  return Response.ok(
+    jsonEncode(personPayload),
+    headers: _jsonHeaders,
+  );
 }

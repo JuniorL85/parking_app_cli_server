@@ -11,9 +11,11 @@ const _jsonHeaders = {
 final vehicleRepo = VehicleRepository.instance;
 
 Future<Response> getAllVehicles(Request req) async {
-  final vehicles = vehicleRepo.getAllVehicles().map((p) => p.toJson()).toList();
+  final vehicles = await vehicleRepo.getAllVehicles();
+
+  final vehiclePayload = vehicles.map((p) => p.toJson()).toList();
   return Response.ok(
-    jsonEncode(vehicles),
+    jsonEncode(vehiclePayload),
     headers: _jsonHeaders,
   );
 }
@@ -23,13 +25,12 @@ Future<Response> getVehicleById(Request req) async {
   final json = jsonDecode(data);
   final vehicle = Vehicle.fromJson(json);
 
-  final vehicles = vehicleRepo
-      .getAllVehicles()
-      .where((p) => p.id == vehicle.id)
-      .map((p) => p.toJson())
-      .toList();
+  final vehicles = await vehicleRepo.getAllVehicles();
+
+  final vehiclePayload =
+      vehicles.where((p) => p.id == vehicle.id).map((p) => p.toJson()).toList();
   return Response.ok(
-    jsonEncode(vehicles),
+    jsonEncode(vehiclePayload),
     headers: _jsonHeaders,
   );
 }
@@ -39,20 +40,25 @@ Future<Response> createVehicle(Request req) async {
   final json = jsonDecode(data);
   final vehicle = Vehicle.fromJson(json);
 
-  vehicleRepo.addVehicle(vehicle);
+  final vehiclePayload = await vehicleRepo.addVehicle(vehicle);
 
-  return Response.ok('Vehicle added!');
+  return Response.ok(
+    jsonEncode(vehiclePayload),
+    headers: _jsonHeaders,
+  );
 }
 
 Future<Response> updateVehicle(Request req) async {
   final data = await req.readAsString();
   final json = jsonDecode(data);
   final vehicle = Vehicle.fromJson(json);
-  final queryParam = req.requestedUri.queryParameters;
 
-  vehicleRepo.updateVehicles(vehicle, queryParam['oldRegNr']);
+  final vehiclePayload = await vehicleRepo.updateVehicles(vehicle);
 
-  return Response.ok('Vehicle with id: ${vehicle.id} updated!');
+  return Response.ok(
+    jsonEncode(vehiclePayload),
+    headers: _jsonHeaders,
+  );
 }
 
 Future<Response> deleteVehicle(Request req) async {
@@ -60,7 +66,10 @@ Future<Response> deleteVehicle(Request req) async {
   final json = jsonDecode(data);
   final vehicle = Vehicle.fromJson(json);
 
-  vehicleRepo.deleteVehicle(vehicle);
+  final vehiclePayload = await vehicleRepo.deleteVehicle(vehicle);
 
-  return Response.ok('Vehicle with id: ${vehicle.id} deleted!');
+  return Response.ok(
+    jsonEncode(vehiclePayload),
+    headers: _jsonHeaders,
+  );
 }

@@ -1,3 +1,4 @@
+import 'package:cli_server/server_config.dart';
 import 'package:cli_shared/cli_shared.dart';
 
 class VehicleRepository {
@@ -5,41 +6,46 @@ class VehicleRepository {
 
   static final instance = VehicleRepository._privateConstructor();
 
-  List<Vehicle> vehicleList = [
-    Vehicle(
-      regNr: 'CDF990',
-      vehicleType: VehicleType.car,
-      owner: Person(
-        name: 'Anders Andersson',
-        socialSecurityNumber: '197811112222',
-      ),
-    )
-  ];
+  // List<Vehicle> vehicleList = [
+  //   Vehicle(
+  //     regNr: 'CDF990',
+  //     vehicleType: VehicleType.car,
+  //     owner: Person(
+  //       name: 'Anders Andersson',
+  //       socialSecurityNumber: '197811112222',
+  //     ),
+  //   )
+  // ];
+  Box vehicleList = ServerConfig.instance.store.box<Vehicle>();
 
-  void addVehicle(Vehicle vehicle) {
-    vehicleList.add(vehicle);
+  Future<dynamic> addVehicle(Vehicle vehicle) async {
+    vehicleList.put(vehicle, mode: PutMode.insert);
+    return vehicle;
   }
 
   getAllVehicles() {
-    return vehicleList;
+    return vehicleList.getAll();
   }
 
-  void updateVehicles(Vehicle vehicle, oldRegNr) {
-    final foundVehicleIndex =
-        vehicleList.indexWhere((v) => v.regNr == oldRegNr);
+  Future<dynamic> updateVehicles(Vehicle vehicle) async {
+    Vehicle? vehicles = vehicleList.get(vehicle.id);
 
-    if (foundVehicleIndex == -1) {
-      // getBackToMainPage(
-      //     'Finns inget fordon med det angivna registreringsnumret');
+    if (vehicles != null) {
+      vehicleList.put(vehicle.id, mode: PutMode.update);
     }
 
-    vehicleList[foundVehicleIndex] = vehicle;
+    return vehicles;
   }
 
-  void deleteVehicle(Vehicle vehicle) {
-    final vehicleToDelete =
-        vehicleList.firstWhere((v) => v.regNr == vehicle.regNr);
+  Future<dynamic> deleteVehicle(Vehicle vehicle) async {
+    // final vehicleToDelete =
+    //     vehicleList.firstWhere((v) => v.regNr == vehicle.regNr);
+    Vehicle? vehicles = vehicleList.get(vehicle.id);
 
-    vehicleList.remove(vehicleToDelete);
+    if (vehicles != null) {
+      vehicleList.remove(vehicle.id);
+    }
+
+    return vehicles;
   }
 }

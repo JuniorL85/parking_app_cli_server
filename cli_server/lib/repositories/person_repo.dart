@@ -1,4 +1,4 @@
-import 'package:collection/src/iterable_extensions.dart';
+import 'package:cli_server/server_config.dart';
 
 import 'package:cli_shared/cli_shared.dart';
 import 'vehicle_repo.dart';
@@ -8,60 +8,64 @@ class PersonRepository {
 
   static final instance = PersonRepository._privateConstructor();
 
-  final VehicleRepository vehicleRepository = VehicleRepository.instance;
+  final vehicleList = VehicleRepository.instance.vehicleList;
 
-  List<Person> personList = [
-    Person(
-      name: 'Test Testsson',
-      socialSecurityNumber: '131313131313',
-    )
-  ];
+  Box personList = ServerConfig.instance.store.box<Person>();
 
-  void addPerson(Person person) {
-    personList.add(person);
+  Future<dynamic> addPerson(Person person) async {
+    personList.put(person, mode: PutMode.insert);
+    return person;
   }
 
-  getAllPersons() {
-    // if (personList.isNotEmpty) {
-    //   for (var (index, person) in personList.indexed) {
-    //     print(
-    //         '${index + 1}. Id: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}\n');
-    //   }
-    // } else {
-    //   print('Inga personer att visa i nuläget. Testa att lägga till personer.');
-    // }
-    return personList;
+  Future<dynamic> getAllPersons() async {
+    return personList.getAll();
   }
 
-  void updatePersons(Person person) {
-    final foundPersonIndex = personList.indexWhere(
-        (pers) => pers.socialSecurityNumber == person.socialSecurityNumber);
+  Future<dynamic> updatePersons(Person person) async {
+    Person? personToUpdate = personList.get(person.id);
 
-    if (foundPersonIndex == -1) {
-      // getBackToMainPage('Finns ingen person med det angivna personnumret');
+    if (personToUpdate != null) {
+      personList.put(person, mode: PutMode.update);
     }
 
-    personList[foundPersonIndex] = person;
+    return person;
   }
 
-  void deletePerson(String socialSecurityNumber) {
-    final personToDelete = personList.firstWhereOrNull(
-        (person) => person.socialSecurityNumber == socialSecurityNumber);
+  Future<dynamic> deletePerson(Person person) async {
+    Person? personToDelete = personList.get(person.id);
 
     if (personToDelete != null) {
-      final personToDeleteInVehicleListIndex = vehicleRepository.vehicleList
-          .indexWhere((v) =>
-              v.owner!.socialSecurityNumber ==
-              personToDelete.socialSecurityNumber);
+      personList.remove(person.id);
+      // final personToDeleteInVehicleList = vehicleList
+      //     .where((v) =>
+      //         v.owner!.socialSecurityNumber ==
+      //         personToDelete.socialSecurityNumber)
+      //     .first;
+      final personToDeleteInVehicleList = vehicleList.get(person.id);
 
-      personList.remove(personToDelete);
-
-      if (personToDeleteInVehicleListIndex != -1) {
-        vehicleRepository.vehicleList
-            .removeAt(personToDeleteInVehicleListIndex);
+      if (personToDeleteInVehicleList != null) {
+        vehicleList.remove(personToDeleteInVehicleList.id);
       }
-    } else {
-      // getBackToMainPage('Finns ingen person med det angivna personnumret');
     }
+
+    return person;
+    // final personToDelete = personList.firstWhereOrNull(
+    //     (person) => person.socialSecurityNumber == socialSecurityNumber);
+
+    // if (personToDelete != null) {
+    //   final personToDeleteInVehicleListIndex = vehicleRepository.vehicleList
+    //       .indexWhere((v) =>
+    //           v.owner!.socialSecurityNumber ==
+    //           personToDelete.socialSecurityNumber);
+
+    //   personList.remove(personToDelete);
+
+    //   if (personToDeleteInVehicleListIndex != -1) {
+    //     vehicleRepository.vehicleList
+    //         .removeAt(personToDeleteInVehicleListIndex);
+    //   }
+    // } else {
+    //   // getBackToMainPage('Finns ingen person med det angivna personnumret');
+    // }
   }
 }
