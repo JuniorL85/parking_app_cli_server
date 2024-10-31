@@ -148,7 +148,7 @@ class VehicleLogic extends SetMain {
     if (vehicleList.isNotEmpty) {
       for (var vehicle in vehicleList) {
         print(
-            'Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType}\n');
+            '\x1B[36mId: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType}\x1B[0m\n');
       }
     } else {
       print('Finns inga fordon att visa just nu....');

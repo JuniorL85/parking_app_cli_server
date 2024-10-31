@@ -179,7 +179,7 @@ class ParkingLogic extends SetMain {
       if (parkingList.isNotEmpty) {
         for (var park in parkingList) {
           print(
-              'Id: ${park.id}\n Parkering: ${park.parkingSpace.address}\n Time (start and end): ${park.startTime}-${park.endTime}\n RegNr: ${park.vehicle.regNr}\n');
+              '\x1B[36mId: ${park.id}\n Parkering: ${park.parkingSpace.address}\n Time (start and end): ${park.startTime}-${park.endTime}\n RegNr: ${park.vehicle.regNr}\x1B[0m\n');
         }
       } else {
         print('Inga parkeringar att visa för tillfället.....');

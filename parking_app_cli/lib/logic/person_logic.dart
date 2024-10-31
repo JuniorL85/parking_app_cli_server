@@ -96,7 +96,7 @@ class PersonLogic extends SetMain {
     if (personList.isNotEmpty) {
       for (var person in personList) {
         print(
-            'Id: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}\n');
+            '\x1B[36mId: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}\x1B[0m\n');
       }
     } else {
       print('Inga personer att visa i nuläget. Testa att lägga till personer.');

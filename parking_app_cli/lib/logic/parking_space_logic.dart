@@ -91,7 +91,7 @@ class ParkingSpaceLogic extends SetMain {
     if (parkingSpaceList.isNotEmpty) {
       for (var parkingSpace in parkingSpaceList) {
         print(
-            'Id: ${parkingSpace.id}\n Adress: ${parkingSpace.address}\n Pris per timme: ${parkingSpace.pricePerHour}\n');
+            '\x1B[36mId: ${parkingSpace.id}\n Adress: ${parkingSpace.address}\n Pris per timme: ${parkingSpace.pricePerHour}\x1B[0m\n');
       }
     } else {
       print('Inga parkeringsplatser att visa för tillfället....');
