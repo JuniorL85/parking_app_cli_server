@@ -5,11 +5,8 @@ final safeId = safeIntId.incId();
 
 @Entity()
 class Person {
-  Person({
-    required this.name,
-    required this.socialSecurityNumber,
-    int? id,
-  }) : id = id ?? safeId;
+  Person(
+      {required this.name, required this.socialSecurityNumber, this.id = -1});
 
   @Id()
   int id;
