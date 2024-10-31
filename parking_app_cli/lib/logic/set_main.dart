@@ -17,7 +17,10 @@ class SetMain {
     'Välj ett alternativ (1-5): ',
   ];
 
-  void setMainPage() {
+  void setMainPage({bool clearConsole = false}) {
+    if (clearConsole) {
+      clearCli();
+    }
     int pickedMenuOption;
     stdout.writeAll(firstPageTexts);
     final input = stdin.readLineSync();
@@ -30,6 +33,7 @@ class SetMain {
 
       switch (pickedOption) {
         case 1:
+          clearCli();
           stdout.writeAll(PersonLogic().texts);
           final personInput = stdin.readLineSync();
           if (personInput == null || personInput.isEmpty) {
@@ -42,6 +46,7 @@ class SetMain {
           personLogic.runLogic(pickedMenuOption);
           break;
         case 2:
+          clearCli();
           stdout.writeAll(VehicleLogic().texts);
           final vehicleInput = stdin.readLineSync();
 
@@ -55,6 +60,7 @@ class SetMain {
           vehicleLogic.runLogic(pickedMenuOption);
           break;
         case 3:
+          clearCli();
           stdout.writeAll(ParkingSpaceLogic().texts);
           final parkingSpaceInput = stdin.readLineSync();
 
@@ -68,6 +74,7 @@ class SetMain {
           vehicleLogic.runLogic(pickedMenuOption);
           break;
         case 4:
+          clearCli();
           stdout.writeAll(ParkingLogic().texts);
           final parkingInput = stdin.readLineSync();
 
@@ -96,5 +103,9 @@ class SetMain {
     print(printText);
     setMainPage();
     return;
+  }
+
+  clearCli() {
+    stdout.write('\x1B[2J\x1B[0;0H');
   }
 }

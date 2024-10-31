@@ -38,13 +38,12 @@ class ParkingLogic extends SetMain {
         _deleteParkingLogic();
         break;
       case 5:
-        setMainPage();
+        setMainPage(clearConsole: true);
         return;
       default:
         print('Ogiltigt val');
         return;
     }
-    print('\n---------------------------------\n');
   }
 
   String _getCorrectDate(String endTime) {
@@ -191,7 +190,7 @@ class ParkingLogic extends SetMain {
     }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
-    setMainPage();
+    setMainPage(clearConsole: true);
   }
 
   void _updateParkingLogic() async {

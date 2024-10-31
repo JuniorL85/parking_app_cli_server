@@ -33,13 +33,12 @@ class ParkingSpaceLogic extends SetMain {
         _deleteParkingSpaceLogic();
         break;
       case 5:
-        setMainPage();
+        setMainPage(clearConsole: true);
         return;
       default:
         print('Ogiltigt val');
         return;
     }
-    print('\n---------------------------------\n');
   }
 
   void _addParkingSpaceLogic() async {
@@ -99,7 +98,7 @@ class ParkingSpaceLogic extends SetMain {
     }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
-    setMainPage();
+    setMainPage(clearConsole: true);
   }
 
   void _updateParkingSpacesLogic() async {

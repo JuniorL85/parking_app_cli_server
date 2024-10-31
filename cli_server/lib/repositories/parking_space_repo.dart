@@ -25,28 +25,11 @@ class ParkingSpaceRepository {
   }
 
   Future<dynamic> updateParkingSpace(ParkingSpace parkingSpace) async {
-    // final foundParkingSpaceIndex =
-    //     parkingSpaceList.indexWhere((v) => v.id == parkingSpace.id);
-
-    // if (foundParkingSpaceIndex == -1) {
-    //   // getBackToMainPage('Finns ingen parkeringsplats med det angivna id');
-    // }
-
-    // parkingSpaceList[foundParkingSpaceIndex] = parkingSpace;
-    ParkingSpace? parkingSpaces = parkingSpaceList.get(parkingSpace.id);
-
-    if (parkingSpaces != null) {
-      parkingSpaceList.put(parkingSpace, mode: PutMode.update);
-    }
-
+    parkingSpaceList.put(parkingSpace, mode: PutMode.update);
     return parkingSpace;
   }
 
   Future<dynamic> deleteParkingSpace(ParkingSpace parkingSpace) async {
-    // final parkingSpaceToDelete =
-    //     parkingSpaceList.firstWhere((parking) => parking.id == parkingSpace.id);
-
-    // parkingSpaceList.remove(parkingSpaceToDelete);
     ParkingSpace? parkingSpaces = parkingSpaceList.get(parkingSpace.id);
 
     if (parkingSpaces != null) {
