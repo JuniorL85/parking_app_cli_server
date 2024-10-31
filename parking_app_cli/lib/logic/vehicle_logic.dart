@@ -106,17 +106,20 @@ class VehicleLogic extends SetMain {
       }
 
       int pickedOption = int.parse(typeInput);
-      VehicleType vehicleType = VehicleType.car;
+      var vehicleType;
       // Lägg till rätt fordonstyp
       switch (pickedOption) {
         case 1:
-          vehicleType = VehicleType.car;
+          vehicleType = 'Car';
           break;
         case 2:
-          vehicleType = VehicleType.motorcycle;
+          vehicleType = 'Motorcycle';
           break;
         case 3:
-          vehicleType = VehicleType.other;
+          vehicleType = 'Other';
+          break;
+        default:
+          vehicleType = 'Other';
           break;
       }
 
@@ -124,6 +127,7 @@ class VehicleLogic extends SetMain {
         regNr: regNrInput.toUpperCase(),
         vehicleType: vehicleType,
         owner: Person(
+            id: personToAdd.id,
             name: personToAdd.name,
             socialSecurityNumber: personToAdd.socialSecurityNumber),
       ));
@@ -190,9 +194,6 @@ class VehicleLogic extends SetMain {
               socialSecurityNumber: v.owner.socialSecurityNumber))
           .first;
 
-      VehicleType vehicleType =
-          vehicleList.firstWhere((v) => v.regNr == regNrInput).vehicleType;
-
       print('Vänligen fyll i det nya registreringsnumret på fordonet: ');
       var regnr = stdin.readLineSync()!.toUpperCase();
       String updatedRegnr;
@@ -203,8 +204,9 @@ class VehicleLogic extends SetMain {
         updatedRegnr = regnr;
         final res = await vehicleRepository.updateVehicles(
             Vehicle(
+              id: vehicleList[foundVehicleIndex].id,
               regNr: updatedRegnr,
-              vehicleType: vehicleType,
+              vehicleType: vehicleList[foundVehicleIndex].vehicleType,
               owner: vehicleOwnerInfo,
             ),
             regNrInput);

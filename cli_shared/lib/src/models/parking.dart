@@ -12,8 +12,8 @@ class Parking {
     this.parkingSpace,
     required this.startTime,
     required this.endTime,
-    int? id,
-  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
+    this.id = 0,
+  });
 
   @Id()
   int id;
@@ -74,6 +74,7 @@ class Parking {
 
   factory Parking.fromJson(Map<String, dynamic> json) {
     return Parking(
+      id: json['id'],
       vehicle:
           json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null,
       parkingSpace: json['parkingSpace'] != null
@@ -85,6 +86,7 @@ class Parking {
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'vehicle': vehicle?.toJson(),
         'parkingSpace': parkingSpace?.toJson(),
         'startTime': startTime.toIso8601String(),

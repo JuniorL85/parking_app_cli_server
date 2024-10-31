@@ -1,7 +1,4 @@
 import 'package:objectbox/objectbox.dart';
-import 'package:safe_int_id/safe_int_id.dart';
-
-final safeId = safeIntId.incId();
 
 @Entity()
 class Person {
@@ -19,8 +16,8 @@ class Person {
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
       id: json['id'],
-      name: json['name'] as String,
-      socialSecurityNumber: json['socialSecurityNumber'] as String,
+      name: json['name'],
+      socialSecurityNumber: json['socialSecurityNumber'],
     );
   }
 

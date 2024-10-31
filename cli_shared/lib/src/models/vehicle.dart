@@ -4,25 +4,19 @@ import 'package:objectbox/objectbox.dart';
 
 import 'person.dart';
 
-enum VehicleType {
-  car,
-  motorcycle,
-  other,
-}
-
 @Entity()
 class Vehicle {
   Vehicle({
     required this.regNr,
-    this.vehicleType,
+    required this.vehicleType,
     this.owner,
-    int? id,
-  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
+    this.id = 0,
+  });
 
   @Id()
   int id;
   final String regNr;
-  VehicleType? vehicleType;
+  final String vehicleType;
   @Transient()
   Person? owner;
 
@@ -54,14 +48,16 @@ class Vehicle {
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     return Vehicle(
-        regNr: json['regNr'] as String,
-        vehicleType: VehicleType.values.byName(json['vehicleType']),
+        id: json['id'],
+        regNr: json['regNr'],
+        vehicleType: json['vehicleType'],
         owner: json['owner'] != null ? Person.fromJson(json['owner']) : null);
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'regNr': regNr,
-        'vehicleType': vehicleType?.name,
+        'vehicleType': vehicleType,
         'owner': owner?.toJson()
       };
 }

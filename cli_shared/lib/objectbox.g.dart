@@ -106,7 +106,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(4, 5511511530135843763),
       name: 'Vehicle',
-      lastPropertyId: const obx_int.IdUid(3, 1929063612510948450),
+      lastPropertyId: const obx_int.IdUid(4, 864810319566430656),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -122,6 +122,11 @@ final _entities = <obx_int.ModelEntity>[
         obx_int.ModelProperty(
             id: const obx_int.IdUid(3, 1929063612510948450),
             name: 'ownerInDb',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 864810319566430656),
+            name: 'vehicleType',
             type: 9,
             flags: 0)
       ],
@@ -300,10 +305,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final ownerInDbOffset = object.ownerInDb == null
               ? null
               : fbb.writeString(object.ownerInDb!);
-          fbb.startTable(4);
+          final vehicleTypeOffset = fbb.writeString(object.vehicleType);
+          fbb.startTable(5);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, regNrOffset);
           fbb.addOffset(2, ownerInDbOffset);
+          fbb.addOffset(3, vehicleTypeOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -312,9 +319,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
           final regNrParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, '');
+          final vehicleTypeParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 10, '');
           final idParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final object = Vehicle(regNr: regNrParam, id: idParam)
+          final object = Vehicle(
+              regNr: regNrParam, vehicleType: vehicleTypeParam, id: idParam)
             ..ownerInDb = const fb.StringReader(asciiOptimization: true)
                 .vTableGetNullable(buffer, rootOffset, 8);
 
@@ -391,4 +402,8 @@ class Vehicle_ {
   /// See [Vehicle.ownerInDb].
   static final ownerInDb =
       obx.QueryStringProperty<Vehicle>(_entities[3].properties[2]);
+
+  /// See [Vehicle.vehicleType].
+  static final vehicleType =
+      obx.QueryStringProperty<Vehicle>(_entities[3].properties[3]);
 }
