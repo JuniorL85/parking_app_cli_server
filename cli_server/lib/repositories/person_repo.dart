@@ -22,12 +22,7 @@ class PersonRepository {
   }
 
   Future<dynamic> updatePersons(Person person) async {
-    Person? personToUpdate = personList.get(person.id);
-
-    if (personToUpdate != null) {
-      personList.put(person, mode: PutMode.update);
-    }
-
+    personList.put(person, mode: PutMode.update);
     return person;
   }
 

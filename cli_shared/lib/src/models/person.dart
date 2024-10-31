@@ -5,8 +5,7 @@ final safeId = safeIntId.incId();
 
 @Entity()
 class Person {
-  Person(
-      {required this.name, required this.socialSecurityNumber, this.id = -1});
+  Person({required this.name, required this.socialSecurityNumber, this.id = 0});
 
   @Id()
   int id;
@@ -19,12 +18,14 @@ class Person {
 
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
+      id: json['id'],
       name: json['name'] as String,
       socialSecurityNumber: json['socialSecurityNumber'] as String,
     );
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'name': name,
         'socialSecurityNumber': socialSecurityNumber,
       };

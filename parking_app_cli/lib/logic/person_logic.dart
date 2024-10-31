@@ -143,7 +143,10 @@ class PersonLogic extends SetMain {
       } else {
         updatedName = name;
         final res = await personRepository.updatePersons(Person(
-            name: updatedName, socialSecurityNumber: socialSecurityNrInput));
+          id: personList[foundPersonIndex].id,
+          name: updatedName,
+          socialSecurityNumber: socialSecurityNrInput,
+        ));
         if (res.statusCode == 200) {
           print(
               'Person uppdaterad, välj att se alla i menyn för att se uppdateringen');
