@@ -1,4 +1,7 @@
 import 'package:objectbox/objectbox.dart';
+import 'package:safe_int_id/safe_int_id.dart';
+
+final safeId = safeIntId.incId();
 
 @Entity()
 class Person {
@@ -6,7 +9,7 @@ class Person {
     required this.name,
     required this.socialSecurityNumber,
     int? id,
-  }) : id = id ?? DateTime.now().microsecondsSinceEpoch;
+  }) : id = id ?? safeId;
 
   @Id()
   int id;
