@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cli_shared/cli_shared.dart';
+import 'package:parking_app_cli/utils/print.dart';
 import '../repositories/person_repo.dart';
 import 'set_main.dart';
 
@@ -35,7 +36,7 @@ class PersonLogic extends SetMain {
         setMainPage(clearConsole: true);
         return;
       default:
-        print('Ogiltigt val');
+        printColor('Ogiltigt val', 'error');
         return;
     }
   }
@@ -79,14 +80,17 @@ class PersonLogic extends SetMain {
           Person(name: nameInput, socialSecurityNumber: socialSecurityNrInput));
 
       if (res.statusCode == 200) {
-        print('Person tillagd, välj att se alla i menyn för att se personer');
+        printColor(
+            'Person tillagd, välj att se alla i menyn för att se personer',
+            'success');
       } else {
-        print('Något gick fel du omdirigeras till huvudmenyn');
+        printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
       }
       setMainPage();
     } else {
-      print(
-          'Du måste ange ett personnummer med 12 siffror, du omdirigeras till huvudmenyn');
+      printColor(
+          'Du måste ange ett personnummer med 12 siffror, du omdirigeras till huvudmenyn',
+          'error');
       setMainPage();
     }
   }
@@ -95,11 +99,14 @@ class PersonLogic extends SetMain {
     final personList = await personRepository.getAllPersons();
     if (personList.isNotEmpty) {
       for (var person in personList) {
-        print(
-            '\x1B[36mId: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}\x1B[0m\n');
+        printColor(
+            'Id: ${person.id}\n Namn: ${person.name}\n  Personnummer: ${person.socialSecurityNumber}',
+            'info');
       }
     } else {
-      print('Inga personer att visa i nuläget. Testa att lägga till personer.');
+      printColor(
+          'Inga personer att visa i nuläget. Testa att lägga till personer.',
+          'error');
     }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
@@ -147,10 +154,11 @@ class PersonLogic extends SetMain {
           socialSecurityNumber: socialSecurityNrInput,
         ));
         if (res.statusCode == 200) {
-          print(
-              'Person uppdaterad, välj att se alla i menyn för att se uppdateringen');
+          printColor(
+              'Person uppdaterad, välj att se alla i menyn för att se uppdateringen',
+              'success');
         } else {
-          print('Något gick fel du omdirigeras till huvudmenyn');
+          printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
         }
       }
       setMainPage();
@@ -189,9 +197,11 @@ class PersonLogic extends SetMain {
           await personRepository.deletePerson(personList[foundPersonIndex]);
 
       if (res.statusCode == 200) {
-        print('Person raderad, välj att se alla i menyn för att se personer');
+        printColor(
+            'Person raderad, välj att se alla i menyn för att se personer',
+            'success');
       } else {
-        print('Något gick fel du omdirigeras till huvudmenyn');
+        printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
       }
       setMainPage();
     } else {

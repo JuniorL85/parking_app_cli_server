@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:cli_shared/cli_shared.dart';
+import 'package:parking_app_cli/utils/calculate.dart';
+import 'package:parking_app_cli/utils/print.dart';
 
 import '../repositories/parking_repo.dart';
 import '../repositories/parking_space_repo.dart';
@@ -41,7 +43,7 @@ class ParkingLogic extends SetMain {
         setMainPage(clearConsole: true);
         return;
       default:
-        print('Ogiltigt val');
+        printColor('Ogiltigt val', 'error');
         return;
     }
   }
@@ -50,12 +52,6 @@ class ParkingLogic extends SetMain {
     DateTime dateToday = DateTime.now();
     String date = dateToday.toString().substring(0, 10);
     return '$date $endTime';
-  }
-
-  void _calculateDuration(startTime, endTime, pricePerHour) {
-    Duration interval = endTime.difference(startTime);
-    final price = interval.inMinutes / 60 * pricePerHour;
-    print('\nDitt pris kommer att bli: ${price.toStringAsFixed(2)}kr\n');
   }
 
   void _addParkingLogic() async {
@@ -131,7 +127,7 @@ class ParkingLogic extends SetMain {
               DateTime.tryParse(_getCorrectDate(endTimeInput));
 
           if (formattedEndTimeInput == null) {
-            print('Du angav ett felaktigt tidsformat');
+            printColor('Du angav ett felaktigt tidsformat', 'error');
             setMainPage();
             return;
           }
@@ -144,12 +140,14 @@ class ParkingLogic extends SetMain {
           ));
 
           if (res.statusCode == 200) {
-            _calculateDuration(DateTime.now(), formattedEndTimeInput,
+            calculateDuration(DateTime.now(), formattedEndTimeInput,
                 parkingSpaceList[parkingSpaceIndexId].pricePerHour);
-            print(
-                'Parkering startad, välj att se alla i menyn för att se parkeringar');
+            printColor(
+                'Parkering startad, välj att se alla i menyn för att se parkeringar',
+                'success');
           } else {
-            print('Något gick fel du omdirigeras till huvudmenyn');
+            printColor(
+                'Något gick fel du omdirigeras till huvudmenyn', 'error');
           }
           setMainPage();
         } else {
@@ -178,15 +176,16 @@ class ParkingLogic extends SetMain {
       parkingList = await parkingRepository.getAllParkings();
       if (parkingList.isNotEmpty) {
         for (var park in parkingList) {
-          print(
-              '\x1B[36mId: ${park.id}\n Parkering: ${park.parkingSpace.address}\n Time (start and end): ${park.startTime}-${park.endTime}\n RegNr: ${park.vehicle.regNr}\x1B[0m\n');
+          printColor(
+              'Id: ${park.id}\n Parkering: ${park.parkingSpace.address}\n Time (start and end): ${park.startTime}-${park.endTime}\n RegNr: ${park.vehicle.regNr}',
+              'info');
         }
       } else {
-        print('Inga parkeringar att visa för tillfället.....');
+        printColor('Inga parkeringar att visa för tillfället.....', 'error');
         getBackToMainPage('');
       }
     } else {
-      print('Inga parkeringar att visa för tillfället.....');
+      printColor('Inga parkeringar att visa för tillfället.....', 'error');
     }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
@@ -232,7 +231,7 @@ class ParkingLogic extends SetMain {
             DateTime.tryParse(_getCorrectDate(endTime));
 
         if (formattedEndTimeInput == null) {
-          print('Du angav ett felaktigt tidsformat');
+          printColor('Du angav ett felaktigt tidsformat', 'error');
           setMainPage();
           return;
         }
@@ -246,10 +245,13 @@ class ParkingLogic extends SetMain {
         ));
 
         if (res.statusCode == 200) {
-          print(
-              'Parkering uppdaterad, välj att se alla i menyn för att se parkeringar');
+          calculateDuration(parking.startTime, formattedEndTimeInput,
+              parking.parkingSpace!.pricePerHour);
+          printColor(
+              'Parkering uppdaterad, välj att se alla i menyn för att se parkeringar',
+              'success');
         } else {
-          print('Något gick fel du omdirigeras till huvudmenyn');
+          printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
         }
       }
       setMainPage();
@@ -289,10 +291,11 @@ class ParkingLogic extends SetMain {
       final res = await parkingRepository.deleteParkings(parking);
 
       if (res.statusCode == 200) {
-        print(
-            'Parkering avslutad, välj att se alla i menyn för att se parkeringar');
+        printColor(
+            'Parkering avslutad, välj att se alla i menyn för att se parkeringar',
+            'success');
       } else {
-        print('Något gick fel du omdirigeras till huvudmenyn');
+        printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
       }
       setMainPage();
     } else {

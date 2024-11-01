@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cli_shared/cli_shared.dart';
+import 'package:parking_app_cli/utils/print.dart';
 import '../repositories/parking_space_repo.dart';
 import 'set_main.dart';
 
@@ -36,7 +37,7 @@ class ParkingSpaceLogic extends SetMain {
         setMainPage(clearConsole: true);
         return;
       default:
-        print('Ogiltigt val');
+        printColor('Ogiltigt val', 'error');
         return;
     }
   }
@@ -78,10 +79,11 @@ class ParkingSpaceLogic extends SetMain {
     final res = await parkingSpaceRepository.addParkingSpace(ParkingSpace(
         address: addressInput, pricePerHour: pricePerHourFormatted));
     if (res.statusCode == 200) {
-      print(
-          'Parkeringsplats tillagd, välj att se alla i menyn för att se parkeringsplatser');
+      printColor(
+          'Parkeringsplats tillagd, välj att se alla i menyn för att se parkeringsplatser',
+          'success');
     } else {
-      print('Något gick fel du omdirigeras till huvudmenyn');
+      printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
     }
     setMainPage();
   }
@@ -90,11 +92,12 @@ class ParkingSpaceLogic extends SetMain {
     final parkingSpaceList = await parkingSpaceRepository.getAllParkingSpaces();
     if (parkingSpaceList.isNotEmpty) {
       for (var parkingSpace in parkingSpaceList) {
-        print(
-            '\x1B[36mId: ${parkingSpace.id}\n Adress: ${parkingSpace.address}\n Pris per timme: ${parkingSpace.pricePerHour}\x1B[0m\n');
+        printColor(
+            'Id: ${parkingSpace.id}\n Adress: ${parkingSpace.address}\n Pris per timme: ${parkingSpace.pricePerHour}',
+            'info');
       }
     } else {
-      print('Inga parkeringsplatser att visa för tillfället....');
+      printColor('Inga parkeringsplatser att visa för tillfället....', 'error');
     }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
@@ -160,10 +163,11 @@ class ParkingSpaceLogic extends SetMain {
           pricePerHour: updatedPph));
 
       if (res.statusCode == 200) {
-        print(
-            'Parkeringsplats uppdaterad, välj att se alla i menyn för att se parkeringsplatser');
+        printColor(
+            'Parkeringsplats uppdaterad, välj att se alla i menyn för att se parkeringsplatser',
+            'success');
       } else {
-        print('Något gick fel du omdirigeras till huvudmenyn');
+        printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
       }
       setMainPage();
     } else {
@@ -202,10 +206,11 @@ class ParkingSpaceLogic extends SetMain {
           .deleteParkingSpace(parkingSpaceList[foundParkingSpaceIdIndex]);
 
       if (res.statusCode == 200) {
-        print(
-            'Parkeringsplats raderad, välj att se alla i menyn för att se parkeringsplatser');
+        printColor(
+            'Parkeringsplats raderad, välj att se alla i menyn för att se parkeringsplatser',
+            'success');
       } else {
-        print('Något gick fel du omdirigeras till huvudmenyn');
+        printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
       }
       setMainPage();
     } else {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cli_shared/cli_shared.dart';
+import 'package:parking_app_cli/utils/print.dart';
 import '../repositories/person_repo.dart';
 import '../repositories/vehicle_repo.dart';
 import 'set_main.dart';
@@ -37,7 +38,7 @@ class VehicleLogic extends SetMain {
         setMainPage(clearConsole: true);
         return;
       default:
-        print('Ogiltigt val\n');
+        printColor('Ogiltigt val', 'error');
         return;
     }
   }
@@ -130,14 +131,16 @@ class VehicleLogic extends SetMain {
             socialSecurityNumber: personToAdd.socialSecurityNumber),
       ));
       if (res.statusCode == 200) {
-        print(
-            'Fordon tillagt, välj att se alla i menyn för att se dina fordon');
+        printColor(
+            'Fordon tillagt, välj att se alla i menyn för att se dina fordon',
+            'success');
       } else {
-        print('Något gick fel du omdirigeras till huvudmenyn');
+        printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
       }
       setMainPage();
     } catch (error) {
-      stdout.write('Felaktigt personnummer du omdirigeras till huvudmenyn\n');
+      printColor(
+          'Felaktigt personnummer du omdirigeras till huvudmenyn', 'error');
       setMainPage();
       return;
     }
@@ -147,11 +150,12 @@ class VehicleLogic extends SetMain {
     final vehicleList = await vehicleRepository.getAllVehicles();
     if (vehicleList.isNotEmpty) {
       for (var vehicle in vehicleList) {
-        print(
-            '\x1B[36mId: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType}\x1B[0m\n');
+        printColor(
+            'Id: ${vehicle.id}\n RegNr: ${vehicle.regNr}\n Ägare: ${vehicle.owner.name}-${vehicle.owner.socialSecurityNumber}\n Typ: ${vehicle.vehicleType}',
+            'info');
       }
     } else {
-      print('Finns inga fordon att visa just nu....');
+      printColor('Finns inga fordon att visa just nu....', 'error');
     }
     stdout.write('Tryck på något för att komma till huvudmenyn');
     stdin.readLineSync();
@@ -209,10 +213,11 @@ class VehicleLogic extends SetMain {
             ),
             regNrInput);
         if (res.statusCode == 200) {
-          print(
-              'Fordon uppdaterat, välj att se alla i menyn för att se dina fordon');
+          printColor(
+              'Fordon uppdaterat, välj att se alla i menyn för att se dina fordon',
+              'success');
         } else {
-          print('Något gick fel du omdirigeras till huvudmenyn');
+          printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
         }
       }
       setMainPage();
@@ -251,10 +256,11 @@ class VehicleLogic extends SetMain {
       final res =
           await vehicleRepository.deleteVehicle(vehicleList[foundVehicleIndex]);
       if (res.statusCode == 200) {
-        print(
-            'Fordon raderat, välj att se alla i menyn för att se dina fordon');
+        printColor(
+            'Fordon raderat, välj att se alla i menyn för att se dina fordon',
+            'success');
       } else {
-        print('Något gick fel du omdirigeras till huvudmenyn');
+        printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
       }
       setMainPage();
     } else {

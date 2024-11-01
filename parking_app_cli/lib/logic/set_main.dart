@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:parking_app_cli/utils/clear_cli.dart';
+import 'package:parking_app_cli/utils/print.dart';
+
 import 'parking_logic.dart';
 import 'parking_space_logic.dart';
 import 'person_logic.dart';
@@ -26,7 +29,7 @@ class SetMain {
     final input = stdin.readLineSync();
 
     if (input == null || input.isEmpty) {
-      print('Du har inte valt något giltigt alternativ');
+      printColor('Du har inte valt något giltigt alternativ', 'error');
       return;
     } else {
       int pickedOption = int.parse(input);
@@ -37,7 +40,7 @@ class SetMain {
           stdout.writeAll(PersonLogic().texts);
           final personInput = stdin.readLineSync();
           if (personInput == null || personInput.isEmpty) {
-            print('Du har inte valt något giltigt alternativ');
+            printColor('Du har inte valt något giltigt alternativ', 'error');
             return;
           }
           pickedMenuOption = int.parse(personInput);
@@ -51,7 +54,7 @@ class SetMain {
           final vehicleInput = stdin.readLineSync();
 
           if (vehicleInput == null || vehicleInput.isEmpty) {
-            print('Du har inte valt något giltigt alternativ');
+            printColor('Du har inte valt något giltigt alternativ', 'error');
             return;
           }
           pickedMenuOption = int.parse(vehicleInput);
@@ -65,7 +68,7 @@ class SetMain {
           final parkingSpaceInput = stdin.readLineSync();
 
           if (parkingSpaceInput == null || parkingSpaceInput.isEmpty) {
-            print('Du har inte valt något giltigt alternativ');
+            printColor('Du har inte valt något giltigt alternativ', 'error');
             return;
           }
           pickedMenuOption = int.parse(parkingSpaceInput);
@@ -79,7 +82,7 @@ class SetMain {
           final parkingInput = stdin.readLineSync();
 
           if (parkingInput == null || parkingInput.isEmpty) {
-            print('Du har inte valt något giltigt alternativ');
+            printColor('Du har inte valt något giltigt alternativ', 'error');
             return;
           }
           pickedMenuOption = int.parse(parkingInput);
@@ -92,7 +95,7 @@ class SetMain {
               'Du valde att avsluta, tack för att du använde Parkeringsappen!\n');
           return;
         default:
-          print('Ogiltigt val\n');
+          printColor('Ogiltigt val', 'error');
           return;
       }
       print('\n---------------------------------\n');
@@ -100,12 +103,8 @@ class SetMain {
   }
 
   getBackToMainPage(String printText) {
-    print(printText);
+    printColor(printText, 'error');
     setMainPage();
     return;
-  }
-
-  clearCli() {
-    stdout.write('\x1B[2J\x1B[0;0H');
   }
 }
