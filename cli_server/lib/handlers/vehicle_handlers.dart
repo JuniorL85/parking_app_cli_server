@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cli_server/repositories/vehicle_repo.dart';
 import 'package:cli_shared/cli_shared.dart';
 import 'package:shelf/shelf.dart';
+import 'package:shelf_router/shelf_router.dart';
 
 const _jsonHeaders = {
   'Content-Type': 'application/json',
@@ -21,18 +22,20 @@ Future<Response> getAllVehicles(Request req) async {
 }
 
 Future<Response> getVehicleById(Request req) async {
-  final data = await req.readAsString();
-  final json = jsonDecode(data);
-  final vehicle = Vehicle.fromJson(json);
+  var id = req.params["id"];
 
-  final vehicles = await vehicleRepo.getAllVehicles();
+  if (id != null) {
+    int? intId = int.tryParse(id);
 
-  final vehiclePayload =
-      vehicles.where((p) => p.id == vehicle.id).map((p) => p.toJson()).toList();
-  return Response.ok(
-    jsonEncode(vehiclePayload),
-    headers: _jsonHeaders,
-  );
+    if (intId != null) {
+      Vehicle? vehicle = await vehicleRepo.getVehicleById(intId);
+      return Response.ok(
+        jsonEncode(vehicle),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+  }
+  return Response.notFound('Vehicle with id: $id not found.....');
 }
 
 Future<Response> createVehicle(Request req) async {

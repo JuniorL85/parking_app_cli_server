@@ -6,15 +6,19 @@ class VehicleRepository {
 
   static final instance = VehicleRepository._privateConstructor();
 
-  Box vehicleList = ServerConfig.instance.store.box<Vehicle>();
+  Box<Vehicle> vehicleList = ServerConfig.instance.store.box<Vehicle>();
 
   Future<Vehicle?> addVehicle(Vehicle vehicle) async {
     vehicleList.put(vehicle, mode: PutMode.insert);
     return vehicle;
   }
 
-  getAllVehicles() {
+  Future<List<Vehicle>> getAllVehicles() async {
     return vehicleList.getAll();
+  }
+
+  Future<Vehicle?> getVehicleById(int id) async {
+    return vehicleList.get(id);
   }
 
   Future<Vehicle?> updateVehicles(Vehicle vehicle) async {

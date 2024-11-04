@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cli_server/repositories/parking_space_repo.dart';
 import 'package:cli_shared/cli_shared.dart';
 import 'package:shelf/shelf.dart';
+import 'package:shelf_router/shelf_router.dart';
 
 const _jsonHeaders = {
   'Content-Type': 'application/json',
@@ -21,20 +22,21 @@ Future<Response> getAllParkingSpaces(Request req) async {
 }
 
 Future<Response> getParkingSpaceById(Request req) async {
-  final data = await req.readAsString();
-  final json = jsonDecode(data);
-  final parkingSpace = ParkingSpace.fromJson(json);
+  var id = req.params["id"];
 
-  final parkingSpaces = await parkingSpaceRepo.getAllParkingSpaces();
+  if (id != null) {
+    int? intId = int.tryParse(id);
 
-  final payload = parkingSpaces
-      .where((p) => p.id == parkingSpace.id)
-      .map((p) => p.toJson())
-      .toList();
-  return Response.ok(
-    jsonEncode(payload),
-    headers: _jsonHeaders,
-  );
+    if (intId != null) {
+      ParkingSpace? parkingSpace =
+          await parkingSpaceRepo.getParkingSpaceById(intId);
+      return Response.ok(
+        jsonEncode(parkingSpace),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+  }
+  return Response.notFound('Parkingspace with id: $id not found....');
 }
 
 Future<Response> createParkingSpace(Request req) async {

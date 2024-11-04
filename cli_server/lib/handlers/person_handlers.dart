@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cli_server/repositories/person_repo.dart';
 import 'package:cli_shared/cli_shared.dart';
 import 'package:shelf/shelf.dart';
+import 'package:shelf_router/shelf_router.dart';
 
 const _jsonHeaders = {
   'Content-Type': 'application/json',
@@ -21,16 +22,20 @@ Future<Response> getAllPersons(Request req) async {
 }
 
 Future<Response> getPersonById(Request req) async {
-  return Response(200);
-  // final data = await req.readAsString();
-  // final json = jsonDecode(data);
-  // final person = Person.fromJson(json);
+  var id = req.params["id"];
 
-  // final persons = await personRepo.getAllPersons();
-  // return Response.ok(
-  //   jsonEncode(persons),
-  //   headers: _jsonHeaders,
-  // );
+  if (id != null) {
+    int? intId = int.tryParse(id);
+
+    if (intId != null) {
+      Person? person = await personRepo.getPersonById(intId);
+      return Response.ok(
+        jsonEncode(person),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+  }
+  return Response.notFound('Person with id: $id not found....');
 }
 
 Future<Response> createPerson(Request req) async {

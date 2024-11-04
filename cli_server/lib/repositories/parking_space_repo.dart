@@ -6,22 +6,20 @@ class ParkingSpaceRepository {
 
   static final instance = ParkingSpaceRepository._privateConstructor();
 
-  // List<ParkingSpace> parkingSpaceList = [
-  //   ParkingSpace(
-  //     id: 1234,
-  //     address: 'Testgatan 10, 546 76 Göteborg',
-  //     pricePerHour: 12,
-  //   )
-  // ];
-  Box parkingSpaceList = ServerConfig.instance.store.box<ParkingSpace>();
+  Box<ParkingSpace> parkingSpaceList =
+      ServerConfig.instance.store.box<ParkingSpace>();
 
   Future<ParkingSpace> addParkingSpace(ParkingSpace parkingSpace) async {
     parkingSpaceList.put(parkingSpace, mode: PutMode.insert);
     return parkingSpace;
   }
 
-  getAllParkingSpaces() {
+  Future<List<ParkingSpace>> getAllParkingSpaces() async {
     return parkingSpaceList.getAll();
+  }
+
+  Future<ParkingSpace?> getParkingSpaceById(int id) async {
+    return parkingSpaceList.get(id);
   }
 
   Future<ParkingSpace> updateParkingSpace(ParkingSpace parkingSpace) async {
