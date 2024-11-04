@@ -15,7 +15,7 @@ class ParkingSpaceRepository {
   // ];
   Box parkingSpaceList = ServerConfig.instance.store.box<ParkingSpace>();
 
-  Future<dynamic> addParkingSpace(ParkingSpace parkingSpace) async {
+  Future<ParkingSpace> addParkingSpace(ParkingSpace parkingSpace) async {
     parkingSpaceList.put(parkingSpace, mode: PutMode.insert);
     return parkingSpace;
   }
@@ -24,12 +24,12 @@ class ParkingSpaceRepository {
     return parkingSpaceList.getAll();
   }
 
-  Future<dynamic> updateParkingSpace(ParkingSpace parkingSpace) async {
+  Future<ParkingSpace> updateParkingSpace(ParkingSpace parkingSpace) async {
     parkingSpaceList.put(parkingSpace, mode: PutMode.update);
     return parkingSpace;
   }
 
-  Future<dynamic> deleteParkingSpace(ParkingSpace parkingSpace) async {
+  Future<ParkingSpace> deleteParkingSpace(ParkingSpace parkingSpace) async {
     ParkingSpace? parkingSpaces = parkingSpaceList.get(parkingSpace.id);
 
     if (parkingSpaces != null) {

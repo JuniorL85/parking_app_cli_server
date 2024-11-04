@@ -168,6 +168,7 @@ class VehicleLogic extends SetMain {
     if (vehicleList.isEmpty) {
       getBackToMainPage(
           'Finns inga fordon att uppdatera, testa att lägga till ett fordon först');
+      return;
     }
 
     stdout.write('Fyll i registreringsnummer på fordonet du vill uppdatera: ');
@@ -223,6 +224,7 @@ class VehicleLogic extends SetMain {
       setMainPage();
     } else {
       getBackToMainPage('Du har angett ett felaktigt registreringsnummer');
+      return;
     }
   }
 
@@ -232,6 +234,7 @@ class VehicleLogic extends SetMain {
     if (vehicleList.isEmpty) {
       getBackToMainPage(
           'Finns inga fordon att radera, testa att lägga till ett fordon först');
+      return;
     }
 
     stdout.write('Fyll i registreringsnummer: ');
@@ -265,6 +268,7 @@ class VehicleLogic extends SetMain {
       setMainPage();
     } else {
       getBackToMainPage('Du har angett ett felaktigt registreringsnummer');
+      return;
     }
   }
 }

@@ -12,7 +12,7 @@ class PersonRepository {
 
   Box personList = ServerConfig.instance.store.box<Person>();
 
-  Future<dynamic> addPerson(Person person) async {
+  Future<Person> addPerson(Person person) async {
     personList.put(person, mode: PutMode.insert);
     return person;
   }
@@ -21,21 +21,16 @@ class PersonRepository {
     return personList.getAll();
   }
 
-  Future<dynamic> updatePersons(Person person) async {
+  Future<Person> updatePersons(Person person) async {
     personList.put(person, mode: PutMode.update);
     return person;
   }
 
-  Future<dynamic> deletePerson(Person person) async {
+  Future<Person> deletePerson(Person person) async {
     Person? personToDelete = personList.get(person.id);
 
     if (personToDelete != null) {
       personList.remove(person.id);
-      // final personToDeleteInVehicleList = vehicleList
-      //     .where((v) =>
-      //         v.owner!.socialSecurityNumber ==
-      //         personToDelete.socialSecurityNumber)
-      //     .first;
       final vehicleList = vehicle.getAllVehicles();
 
       final foundVehicleIndex = vehicleList.indexWhere(

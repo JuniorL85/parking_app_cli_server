@@ -53,8 +53,7 @@ Future<Response> updateParking(Request req) async {
   final json = jsonDecode(data);
   final parking = Parking.fromJson(json);
 
-  final parkingPayload =
-      await parkingRepo.updateParkings(parking.vehicle!.regNr, parking.endTime);
+  final parkingPayload = await parkingRepo.updateParkings(parking);
 
   return Response.ok(
     jsonEncode(parkingPayload),
@@ -67,7 +66,7 @@ Future<Response> deleteParking(Request req) async {
   final json = jsonDecode(data);
   final parking = Parking.fromJson(json);
 
-  final payload = await parkingRepo.deleteParkings(parking.vehicle!.regNr);
+  final payload = await parkingRepo.deleteParkings(parking);
 
   return Response.ok(
     jsonEncode(payload),

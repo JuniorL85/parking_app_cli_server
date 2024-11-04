@@ -8,7 +8,7 @@ class VehicleRepository {
 
   Box vehicleList = ServerConfig.instance.store.box<Vehicle>();
 
-  Future<dynamic> addVehicle(Vehicle vehicle) async {
+  Future<Vehicle?> addVehicle(Vehicle vehicle) async {
     vehicleList.put(vehicle, mode: PutMode.insert);
     return vehicle;
   }
@@ -17,12 +17,12 @@ class VehicleRepository {
     return vehicleList.getAll();
   }
 
-  Future<dynamic> updateVehicles(Vehicle vehicle) async {
+  Future<Vehicle?> updateVehicles(Vehicle vehicle) async {
     vehicleList.put(vehicle, mode: PutMode.update);
     return vehicle;
   }
 
-  Future<dynamic> deleteVehicle(Vehicle vehicle) async {
+  Future<Vehicle?> deleteVehicle(Vehicle vehicle) async {
     Vehicle? vehicles = vehicleList.get(vehicle.id);
 
     if (vehicles != null) {

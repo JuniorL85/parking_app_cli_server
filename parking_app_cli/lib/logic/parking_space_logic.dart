@@ -110,6 +110,7 @@ class ParkingSpaceLogic extends SetMain {
     if (parkingSpaceList.isEmpty) {
       getBackToMainPage(
           'Finns inga parkeringsplatser att uppdatera, testa att lägga till en parkeringsplats först');
+      return;
     }
 
     stdout.write('Fyll i id för parkeringsplatsen du vill uppdatera: ');
@@ -172,6 +173,7 @@ class ParkingSpaceLogic extends SetMain {
       setMainPage();
     } else {
       getBackToMainPage('Du angav ett felaktigt id');
+      return;
     }
   }
 
@@ -181,6 +183,7 @@ class ParkingSpaceLogic extends SetMain {
     if (parkingSpaceList.isEmpty) {
       getBackToMainPage(
           'Finns inga parkeringsplatser att radera, testa att lägga till en parkeringsplats först');
+      return;
     }
 
     stdout.write('Fyll i id för parkeringsplatsen: ');
@@ -215,6 +218,7 @@ class ParkingSpaceLogic extends SetMain {
       setMainPage();
     } else {
       getBackToMainPage('Du angav ett felaktigt id');
+      return;
     }
   }
 }

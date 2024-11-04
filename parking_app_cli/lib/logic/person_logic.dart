@@ -119,6 +119,7 @@ class PersonLogic extends SetMain {
     if (personList.isEmpty) {
       getBackToMainPage(
           'Finns inga personer att uppdatera, testa att lägga till en person först');
+      return;
     }
     stdout.write(
         'Fyll i personnummer på personen du vill uppdatera (12 siffror utan bindestreck): ');
@@ -164,6 +165,7 @@ class PersonLogic extends SetMain {
       setMainPage();
     } else {
       getBackToMainPage('Finns ingen person med det angivna personnumret');
+      return;
     }
   }
 
@@ -173,6 +175,7 @@ class PersonLogic extends SetMain {
     if (personList.isEmpty) {
       getBackToMainPage(
           'Finns inga personer att radera, testa att lägga till en person först');
+      return;
     }
     stdout.write('Fyll i personnummer (12 siffror utan bindestreck): ');
     var socialSecurityNrInput = stdin.readLineSync();
@@ -206,6 +209,7 @@ class PersonLogic extends SetMain {
       setMainPage();
     } else {
       getBackToMainPage('Finns ingen person med det angivna personnumret');
+      return;
     }
   }
 }

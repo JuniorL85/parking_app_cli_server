@@ -134,10 +134,18 @@ class ParkingLogic extends SetMain {
 
           final res = await parkingRepository.addParking(Parking(
             vehicle: vehicleList[foundMatchingRegNr],
-            parkingSpace: parkingSpaceList[parkingSpaceIndexId],
+            parkingSpace: ParkingSpace(
+                id: parkingSpaceList[parkingSpaceIndexId].id,
+                address: parkingSpaceList[parkingSpaceIndexId].address,
+                pricePerHour:
+                    parkingSpaceList[parkingSpaceIndexId].pricePerHour),
             startTime: DateTime.now(),
             endTime: formattedEndTimeInput,
           ));
+
+          print(parkingSpaceList[parkingSpaceIndexId].address);
+          print(parkingSpaceList[parkingSpaceIndexId].id);
+          print(parkingSpaceList[parkingSpaceIndexId].pricePerHour);
 
           if (res.statusCode == 200) {
             calculateDuration(DateTime.now(), formattedEndTimeInput,
@@ -152,9 +160,11 @@ class ParkingLogic extends SetMain {
           setMainPage();
         } else {
           getBackToMainPage('Finns ingen parkeringsplats med angivet id');
+          return;
         }
       } else {
         getBackToMainPage('Finns inget matchande registreringsnummer');
+        return;
       }
     }
   }
@@ -183,6 +193,7 @@ class ParkingLogic extends SetMain {
       } else {
         printColor('Inga parkeringar att visa för tillfället.....', 'error');
         getBackToMainPage('');
+        return;
       }
     } else {
       printColor('Inga parkeringar att visa för tillfället.....', 'error');
@@ -198,6 +209,7 @@ class ParkingLogic extends SetMain {
     if (parkingList.isEmpty) {
       getBackToMainPage(
           'Finns inga parkeringar att uppdatera, testa att lägga till en parkering först');
+      return;
     }
 
     stdout.write('Fyll i registreringsnummer: ');
@@ -238,6 +250,7 @@ class ParkingLogic extends SetMain {
 
         Parking parking = parkingList[foundParkingIndexId];
         final res = await parkingRepository.updateParkings(Parking(
+          id: parking.id,
           vehicle: parking.vehicle,
           parkingSpace: parking.parkingSpace,
           startTime: parking.startTime,
@@ -258,6 +271,7 @@ class ParkingLogic extends SetMain {
     } else {
       getBackToMainPage(
           'Finns ingen aktiv parkering med angivet registreringsnummer');
+      return;
     }
   }
 
@@ -267,6 +281,7 @@ class ParkingLogic extends SetMain {
     if (parkingList.isEmpty) {
       getBackToMainPage(
           'Finns inga parkeringar att radera, testa att lägga till en parkering först');
+      return;
     }
 
     stdout.write('Fyll i registreringsnummer: ');
@@ -300,6 +315,7 @@ class ParkingLogic extends SetMain {
       setMainPage();
     } else {
       getBackToMainPage('Finns ingen aktiv parkering med angivet id');
+      return;
     }
   }
 }
