@@ -8,7 +8,7 @@ class PersonRepository {
 
   static final instance = PersonRepository._privateConstructor();
 
-  final vehicleList = VehicleRepository.instance.vehicleList;
+  final vehicle = VehicleRepository.instance;
 
   Box personList = ServerConfig.instance.store.box<Person>();
 
@@ -36,31 +36,16 @@ class PersonRepository {
       //         v.owner!.socialSecurityNumber ==
       //         personToDelete.socialSecurityNumber)
       //     .first;
-      final personToDeleteInVehicleList = vehicleList.get(person.id);
+      final vehicleList = vehicle.getAllVehicles();
 
-      if (personToDeleteInVehicleList != null) {
-        vehicleList.remove(personToDeleteInVehicleList.id);
+      final foundVehicleIndex = vehicleList.indexWhere(
+          (p) => p.owner.socialSecurityNumber == person.socialSecurityNumber);
+
+      if (foundVehicleIndex != -1) {
+        await vehicle.deleteVehicle(vehicleList[foundVehicleIndex]);
       }
     }
 
     return person;
-    // final personToDelete = personList.firstWhereOrNull(
-    //     (person) => person.socialSecurityNumber == socialSecurityNumber);
-
-    // if (personToDelete != null) {
-    //   final personToDeleteInVehicleListIndex = vehicleRepository.vehicleList
-    //       .indexWhere((v) =>
-    //           v.owner!.socialSecurityNumber ==
-    //           personToDelete.socialSecurityNumber);
-
-    //   personList.remove(personToDelete);
-
-    //   if (personToDeleteInVehicleListIndex != -1) {
-    //     vehicleRepository.vehicleList
-    //         .removeAt(personToDeleteInVehicleListIndex);
-    //   }
-    // } else {
-    //   // getBackToMainPage('Finns ingen person med det angivna personnumret');
-    // }
   }
 }
