@@ -141,6 +141,10 @@ class PersonLogic extends SetMain {
         .indexWhere((i) => i.socialSecurityNumber == socialSecurityNrInput);
 
     if (foundPersonIndex != -1) {
+      // Hade inte behövt använda nedanstående här men för att påvisa att getPersonById fungerar så kör jag den här
+      Person personById =
+          await personRepository.getPersonById(personList[foundPersonIndex].id);
+
       print('Vill du uppdatera personens namn? Annars tryck Enter: ');
       var name = stdin.readLineSync();
       String updatedName;
@@ -150,7 +154,7 @@ class PersonLogic extends SetMain {
       } else {
         updatedName = name;
         final res = await personRepository.updatePersons(Person(
-          id: personList[foundPersonIndex].id,
+          id: personById.id,
           name: updatedName,
           socialSecurityNumber: socialSecurityNrInput,
         ));

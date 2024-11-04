@@ -37,6 +37,19 @@ class PersonRepository extends SetMain {
     return (json as List).map((person) => Person.fromJson(person)).toList();
   }
 
+  Future<Person> getPersonById(int id) async {
+    final uri = Uri.parse('$host:$port/$resource/$id');
+
+    final response = await http.get(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final json = jsonDecode(response.body);
+
+    return Person.fromJson(json);
+  }
+
   Future<dynamic> updatePersons(Person person) async {
     final uri = Uri.parse('$host:$port/$resource');
 

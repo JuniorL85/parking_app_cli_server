@@ -34,10 +34,21 @@ class VehicleRepository extends SetMain {
     return (json as List).map((vehicle) => Vehicle.fromJson(vehicle)).toList();
   }
 
-  Future<dynamic> updateVehicles(Vehicle vehicle, oldRegNr) async {
-    final uri = Uri.parse('$host:$port/$resource').replace(queryParameters: {
-      'oldRegNr': oldRegNr,
-    });
+  Future<Vehicle> getVehicleById(int id) async {
+    final uri = Uri.parse('$host:$port/$resource/$id');
+
+    final response = await http.get(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final json = jsonDecode(response.body);
+
+    return Vehicle.fromJson(json);
+  }
+
+  Future<dynamic> updateVehicles(Vehicle vehicle) async {
+    final uri = Uri.parse('$host:$port/$resource');
 
     final response = await http.put(uri,
         headers: {'Content-Type': 'application/json'},

@@ -190,12 +190,8 @@ class VehicleLogic extends SetMain {
         vehicleList.indexWhere((p) => p.regNr == regNrInput);
 
     if (foundVehicleIndex != -1) {
-      final vehicleOwnerInfo = vehicleList
-          .where((p) => p.regNr == regNrInput)
-          .map((v) => Person(
-              name: v.owner.name,
-              socialSecurityNumber: v.owner.socialSecurityNumber))
-          .first;
+      Vehicle vehicleById = await vehicleRepository
+          .getVehicleById(vehicleList[foundVehicleIndex].id);
 
       print('Vänligen fyll i det nya registreringsnumret på fordonet: ');
       var regnr = stdin.readLineSync()!.toUpperCase();
@@ -206,13 +202,13 @@ class VehicleLogic extends SetMain {
       } else {
         updatedRegnr = regnr;
         final res = await vehicleRepository.updateVehicles(
-            Vehicle(
-              id: vehicleList[foundVehicleIndex].id,
-              regNr: updatedRegnr,
-              vehicleType: vehicleList[foundVehicleIndex].vehicleType,
-              owner: vehicleOwnerInfo,
-            ),
-            regNrInput);
+          Vehicle(
+            id: vehicleById.id,
+            regNr: updatedRegnr,
+            vehicleType: vehicleById.vehicleType,
+            owner: vehicleById.owner,
+          ),
+        );
         if (res.statusCode == 200) {
           printColor(
               'Fordon uppdaterat, välj att se alla i menyn för att se dina fordon',
