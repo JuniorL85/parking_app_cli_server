@@ -20,16 +20,29 @@ void main() {
 
   tearDown(() => p.kill());
 
-  test('Root', () async {
-    final response = await get(Uri.parse('$host/'));
+  test('Persons', () async {
+    final response = await get(Uri.parse('$host/persons'));
     expect(response.statusCode, 200);
-    expect(response.body, 'Hello, World!\n');
+    print(response.body);
+    // expect(response.body, 'hello\n');
   });
 
-  test('Echo', () async {
-    final response = await get(Uri.parse('$host/echo/hello'));
+  test('Vehicles', () async {
+    final response = await get(Uri.parse('$host/vehicles'));
     expect(response.statusCode, 200);
-    expect(response.body, 'hello\n');
+    // expect(response.body, 'hello\n');
+  });
+
+  test('ParkingSpaces', () async {
+    final response = await get(Uri.parse('$host/parkingSpaces'));
+    expect(response.statusCode, 200);
+    // expect(response.body, 'hello\n');
+  });
+
+  test('Parkings', () async {
+    final response = await get(Uri.parse('$host/parkings'));
+    expect(response.statusCode, 200);
+    // expect(response.body, 'hello\n');
   });
 
   test('404', () async {
