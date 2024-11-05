@@ -27,14 +27,32 @@ void main() {
     // expect(response.body, 'hello\n');
   });
 
+  test('getPersonById', () async {
+    final response = await get(Uri.parse('$host/persons/1'));
+    expect(response.statusCode, 200);
+    // expect(response.body, response.body.contains('name'));
+  });
+
   test('Vehicles', () async {
     final response = await get(Uri.parse('$host/vehicles'));
     expect(response.statusCode, 200);
     // expect(response.body, 'hello\n');
   });
 
+  test('getVehicleById', () async {
+    final response = await get(Uri.parse('$host/vehicles/1'));
+    expect(response.statusCode, 200);
+    // expect(response.body, 'hello\n');
+  });
+
   test('ParkingSpaces', () async {
     final response = await get(Uri.parse('$host/parkingSpaces'));
+    expect(response.statusCode, 200);
+    // expect(response.body, 'hello\n');
+  });
+
+  test('getParkingSpaceById', () async {
+    final response = await get(Uri.parse('$host/parkingSpaces/2'));
     expect(response.statusCode, 200);
     // expect(response.body, 'hello\n');
   });
