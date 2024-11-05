@@ -248,18 +248,20 @@ class ParkingLogic extends SetMain {
           return;
         }
 
-        Parking parking = parkingList[foundParkingIndexId];
+        Parking parkingById = await parkingRepository
+            .getParkingById(parkingList[foundParkingIndexId].id);
+
         final res = await parkingRepository.updateParkings(Parking(
-          id: parking.id,
-          vehicle: parking.vehicle,
-          parkingSpace: parking.parkingSpace,
-          startTime: parking.startTime,
+          id: parkingById.id,
+          vehicle: parkingById.vehicle,
+          parkingSpace: parkingById.parkingSpace,
+          startTime: parkingById.startTime,
           endTime: formattedEndTimeInput,
         ));
 
         if (res.statusCode == 200) {
-          calculateDuration(parking.startTime, formattedEndTimeInput,
-              parking.parkingSpace!.pricePerHour);
+          calculateDuration(parkingById.startTime, formattedEndTimeInput,
+              parkingById.parkingSpace!.pricePerHour);
           printColor(
               'Parkering uppdaterad, välj att se alla i menyn för att se parkeringar',
               'success');
