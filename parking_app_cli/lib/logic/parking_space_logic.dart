@@ -132,6 +132,9 @@ class ParkingSpaceLogic extends SetMain {
         parkingSpaceList.indexWhere((i) => i.id == transformedId);
 
     if (foundParkingSpaceIdIndex != -1) {
+      // Hade inte behövt använda nedanstående här men för att påvisa att getParkingSpaceById fungerar så kör jag den här
+      ParkingSpace parkingSpaceById =
+          await parkingSpaceRepository.getParkingSpaceById(transformedId);
       ParkingSpace oldParkingSpace = parkingSpaceList[foundParkingSpaceIdIndex];
 
       print(
@@ -159,7 +162,7 @@ class ParkingSpaceLogic extends SetMain {
       }
 
       final res = await parkingSpaceRepository.updateParkingSpace(ParkingSpace(
-          id: int.parse(parkingPlaceIdInput),
+          id: parkingSpaceById.id,
           address: updatedAddress,
           pricePerHour: updatedPph));
 

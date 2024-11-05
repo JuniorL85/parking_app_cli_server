@@ -36,6 +36,19 @@ class ParkingSpaceRepository extends SetMain {
         .toList();
   }
 
+  Future<ParkingSpace> getParkingSpaceById(int id) async {
+    final uri = Uri.parse('$host:$port/$resource/$id');
+
+    final response = await http.get(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final json = jsonDecode(response.body);
+
+    return ParkingSpace.fromJson(json);
+  }
+
   Future<dynamic> updateParkingSpace(ParkingSpace parkingSpace) async {
     final uri = Uri.parse('$host:$port/$resource');
 
