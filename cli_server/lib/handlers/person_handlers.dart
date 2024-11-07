@@ -70,7 +70,6 @@ Future<Response> deletePerson(Request req) async {
   final person = Person.fromJson(json);
 
   final personPayload = await personRepo.deletePerson(person);
-  print(personPayload);
 
   return Response.ok(
     jsonEncode(personPayload),
