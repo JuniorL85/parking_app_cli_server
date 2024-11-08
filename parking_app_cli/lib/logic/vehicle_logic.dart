@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cli_shared/cli_shared.dart';
 import 'package:parking_app_cli/utils/print.dart';
+import 'package:parking_app_cli/utils/validate.dart';
 import '../repositories/person_repo.dart';
 import '../repositories/vehicle_repo.dart';
 import 'set_main.dart';
@@ -63,86 +64,100 @@ class VehicleLogic extends SetMain {
       return;
     }
 
-    if (int.parse(socialSecurityNumberInput) == 1) {
-      setMainPage();
-      return;
-    }
-
-    try {
+    if (validateSocialSecurityNumber(socialSecurityNumberInput)) {
+      if (int.parse(socialSecurityNumberInput) == 1) {
+        setMainPage();
+        return;
+      }
       // Lägg till rätt person på fordon
       final personList = await personRepository.getAllPersons();
-      final personToAdd = personList.firstWhere(
-          (person) => person.socialSecurityNumber == socialSecurityNumberInput);
 
-      stdout.write('Fyll i registreringsnummer: ');
-      var regNrInput = stdin.readLineSync();
+      final foundPersonIndex = personList.indexWhere(
+          (i) => i.socialSecurityNumber == socialSecurityNumberInput);
 
-      if (regNrInput == null || regNrInput.isEmpty) {
+      if (foundPersonIndex != -1) {
+        final personToAdd = personList.firstWhere((person) =>
+            person.socialSecurityNumber == socialSecurityNumberInput);
+
+        stdout.write('Fyll i registreringsnummer: ');
+        var regNrInput = stdin.readLineSync();
+
+        if (regNrInput == null || regNrInput.isEmpty) {
+          stdout.write(
+              'Du har inte fyllt i något registreringsnummer, vänligen fyll i ett registreringsnummer: ');
+          regNrInput = stdin.readLineSync();
+        }
+
+        if (regNrInput == null || regNrInput.isEmpty) {
+          setMainPage();
+          return;
+        }
+
         stdout.write(
-            'Du har inte fyllt i något registreringsnummer, vänligen fyll i ett registreringsnummer: ');
-        regNrInput = stdin.readLineSync();
-      }
+            'Fyll i vilken typ av fordon det är med en siffra (1: Bil, 2: Motorcykel, 3: Annat): ');
+        var typeInput = stdin.readLineSync();
 
-      if (regNrInput == null || regNrInput.isEmpty) {
-        setMainPage();
-        return;
-      }
+        if (typeInput == null || typeInput.isEmpty) {
+          stdout.write(
+              'Du har inte fyllt i någon typ, vänligen fyll i en siffra (1: Bil, 2: Motorcykel, 3: Annat): ');
+          typeInput = stdin.readLineSync();
+        }
 
-      stdout.write(
-          'Fyll i vilken typ av fordon det är med en siffra (1: Bil, 2: Motorcykel, 3: Annat): ');
-      var typeInput = stdin.readLineSync();
+        // Dubbelkollar så inga tomma värden skickas
+        if (typeInput == null || typeInput.isEmpty) {
+          setMainPage();
+          return;
+        }
 
-      if (typeInput == null || typeInput.isEmpty) {
-        stdout.write(
-            'Du har inte fyllt i någon typ, vänligen fyll i en siffra (1: Bil, 2: Motorcykel, 3: Annat): ');
-        typeInput = stdin.readLineSync();
-      }
+        if (validateNumber(typeInput)) {
+          int pickedOption = int.parse(typeInput);
+          String vehicleType;
+          // Lägg till rätt fordonstyp
+          switch (pickedOption) {
+            case 1:
+              vehicleType = 'Car';
+              break;
+            case 2:
+              vehicleType = 'Motorcycle';
+              break;
+            case 3:
+              vehicleType = 'Other';
+              break;
+            default:
+              vehicleType = 'Other';
+              break;
+          }
 
-      // Dubbelkollar så inga tomma värden skickas
-      if (typeInput == null || typeInput.isEmpty) {
-        setMainPage();
-        return;
-      }
-
-      int pickedOption = int.parse(typeInput);
-      var vehicleType;
-      // Lägg till rätt fordonstyp
-      switch (pickedOption) {
-        case 1:
-          vehicleType = 'Car';
-          break;
-        case 2:
-          vehicleType = 'Motorcycle';
-          break;
-        case 3:
-          vehicleType = 'Other';
-          break;
-        default:
-          vehicleType = 'Other';
-          break;
-      }
-
-      final res = await vehicleRepository.addVehicle(Vehicle(
-        regNr: regNrInput.toUpperCase(),
-        vehicleType: vehicleType,
-        owner: Person(
-            id: personToAdd.id,
-            name: personToAdd.name,
-            socialSecurityNumber: personToAdd.socialSecurityNumber),
-      ));
-      if (res.statusCode == 200) {
-        printColor(
-            'Fordon tillagt, välj att se alla i menyn för att se dina fordon',
-            'success');
+          final res = await vehicleRepository.addVehicle(Vehicle(
+            regNr: regNrInput.toUpperCase(),
+            vehicleType: vehicleType,
+            owner: Person(
+                id: personToAdd.id,
+                name: personToAdd.name,
+                socialSecurityNumber: personToAdd.socialSecurityNumber),
+          ));
+          if (res.statusCode == 200) {
+            printColor(
+                'Fordon tillagt, välj att se alla i menyn för att se dina fordon',
+                'success');
+          } else {
+            printColor(
+                'Något gick fel du omdirigeras till huvudmenyn', 'error');
+          }
+          setMainPage();
+        } else {
+          getBackToMainPage('Du har angivit ett felaktigt värde');
+          return;
+        }
       } else {
-        printColor('Något gick fel du omdirigeras till huvudmenyn', 'error');
+        getBackToMainPage('Finns ingen person med det angivna personnumret');
+        return;
       }
-      setMainPage();
-    } catch (error) {
+    } else {
       printColor(
-          'Felaktigt personnummer du omdirigeras till huvudmenyn', 'error');
+          'Du måste ange ett personnummer med 12 siffror, du omdirigeras till huvudmenyn',
+          'error');
       setMainPage();
-      return;
     }
   }
 

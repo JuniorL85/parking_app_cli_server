@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cli_shared/cli_shared.dart';
 import 'package:parking_app_cli/utils/print.dart';
+import 'package:parking_app_cli/utils/validate.dart';
 import '../repositories/person_repo.dart';
 import 'set_main.dart';
 
@@ -42,7 +43,6 @@ class PersonLogic extends SetMain {
   }
 
   void _addPersonLogic() async {
-    final RegExp numberRegExp = RegExp(r'\d');
     print('\nDu har valt att skapa en ny person\n');
     stdout.write('Fyll i namn: ');
     var nameInput = stdin.readLineSync();
@@ -63,8 +63,7 @@ class PersonLogic extends SetMain {
     var socialSecurityNrInput = stdin.readLineSync();
 
     if (socialSecurityNrInput != null &&
-        socialSecurityNrInput.length == 12 &&
-        numberRegExp.hasMatch(socialSecurityNrInput)) {
+        validateSocialSecurityNumber(socialSecurityNrInput)) {
       if (socialSecurityNrInput.isEmpty) {
         stdout.write(
             'Du har inte fyllt i något personnummer, vänligen fyll i ett personnummer: ');

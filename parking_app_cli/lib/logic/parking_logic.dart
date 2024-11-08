@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cli_shared/cli_shared.dart';
 import 'package:parking_app_cli/utils/calculate.dart';
 import 'package:parking_app_cli/utils/print.dart';
+import 'package:parking_app_cli/utils/validate.dart';
 
 import '../repositories/parking_repo.dart';
 import '../repositories/parking_space_repo.dart';
@@ -101,63 +102,65 @@ class ParkingLogic extends SetMain {
           setMainPage();
           return;
         }
-        int transformedId = int.parse(parkingPlaceIdInput);
-        final parkingSpaceList =
-            await parkingSpaceRepository.getAllParkingSpaces();
-        final parkingSpaceIndexId =
-            parkingSpaceList.indexWhere((i) => i.id == transformedId);
 
-        if (parkingSpaceIndexId != -1) {
-          stdout.write(
-              'Fyll i sluttid för din parkering i korrekt format -> (hh:mm): ');
-          var endTimeInput = stdin.readLineSync();
+        if (validateNumber(parkingPlaceIdInput)) {
+          int transformedId = int.parse(parkingPlaceIdInput);
+          final parkingSpaceList =
+              await parkingSpaceRepository.getAllParkingSpaces();
+          final parkingSpaceIndexId =
+              parkingSpaceList.indexWhere((i) => i.id == transformedId);
 
-          if (endTimeInput == null || endTimeInput.isEmpty) {
+          if (parkingSpaceIndexId != -1) {
             stdout.write(
-                'Du har inte fyllt i någon sluttid för din parkering, vänligen fyll i en sluttid för din parkering: ');
-            endTimeInput = stdin.readLineSync();
-          }
+                'Fyll i sluttid för din parkering i korrekt format -> (hh:mm): ');
+            var endTimeInput = stdin.readLineSync();
 
-          if (endTimeInput == null || endTimeInput.isEmpty) {
+            if (endTimeInput == null || endTimeInput.isEmpty) {
+              stdout.write(
+                  'Du har inte fyllt i någon sluttid för din parkering, vänligen fyll i en sluttid för din parkering: ');
+              endTimeInput = stdin.readLineSync();
+            }
+
+            if (endTimeInput == null || endTimeInput.isEmpty) {
+              setMainPage();
+              return;
+            }
+
+            final formattedEndTimeInput =
+                DateTime.tryParse(_getCorrectDate(endTimeInput));
+
+            if (formattedEndTimeInput == null) {
+              printColor('Du angav ett felaktigt tidsformat', 'error');
+              setMainPage();
+              return;
+            }
+
+            final res = await parkingRepository.addParking(Parking(
+              vehicle: vehicleList[foundMatchingRegNr],
+              parkingSpace: ParkingSpace(
+                  id: parkingSpaceList[parkingSpaceIndexId].id,
+                  address: parkingSpaceList[parkingSpaceIndexId].address,
+                  pricePerHour:
+                      parkingSpaceList[parkingSpaceIndexId].pricePerHour),
+              startTime: DateTime.now(),
+              endTime: formattedEndTimeInput,
+            ));
+
+            if (res.statusCode == 200) {
+              calculateDuration(DateTime.now(), formattedEndTimeInput,
+                  parkingSpaceList[parkingSpaceIndexId].pricePerHour);
+              printColor(
+                  'Parkering startad, välj att se alla i menyn för att se parkeringar',
+                  'success');
+            } else {
+              printColor(
+                  'Något gick fel du omdirigeras till huvudmenyn', 'error');
+            }
             setMainPage();
-            return;
-          }
-
-          final formattedEndTimeInput =
-              DateTime.tryParse(_getCorrectDate(endTimeInput));
-
-          if (formattedEndTimeInput == null) {
-            printColor('Du angav ett felaktigt tidsformat', 'error');
-            setMainPage();
-            return;
-          }
-
-          final res = await parkingRepository.addParking(Parking(
-            vehicle: vehicleList[foundMatchingRegNr],
-            parkingSpace: ParkingSpace(
-                id: parkingSpaceList[parkingSpaceIndexId].id,
-                address: parkingSpaceList[parkingSpaceIndexId].address,
-                pricePerHour:
-                    parkingSpaceList[parkingSpaceIndexId].pricePerHour),
-            startTime: DateTime.now(),
-            endTime: formattedEndTimeInput,
-          ));
-
-          print(parkingSpaceList[parkingSpaceIndexId].address);
-          print(parkingSpaceList[parkingSpaceIndexId].id);
-          print(parkingSpaceList[parkingSpaceIndexId].pricePerHour);
-
-          if (res.statusCode == 200) {
-            calculateDuration(DateTime.now(), formattedEndTimeInput,
-                parkingSpaceList[parkingSpaceIndexId].pricePerHour);
-            printColor(
-                'Parkering startad, välj att se alla i menyn för att se parkeringar',
-                'success');
           } else {
-            printColor(
-                'Något gick fel du omdirigeras till huvudmenyn', 'error');
+            getBackToMainPage('Finns ingen parkeringsplats med angivet id');
+            return;
           }
-          setMainPage();
         } else {
           getBackToMainPage('Finns ingen parkeringsplats med angivet id');
           return;
